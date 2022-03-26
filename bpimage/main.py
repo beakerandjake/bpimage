@@ -43,5 +43,5 @@ if __name__ == '__main__':
         sys.exit(main())
     except KeyboardInterrupt:
         sys.exit()
-    except Exception as e:
-        sys.exit(f'Unexpected exception: {str(e)}')
+    # except Exception as e:
+    #     sys.exit(f'Unexpected exception: {str(e)}')

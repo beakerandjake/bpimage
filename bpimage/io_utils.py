@@ -4,6 +4,7 @@ can be switched out with ease. Provides standardized exceptions which simplify e
 """
 import numpy as np
 from PIL import Image, ImageShow, UnidentifiedImageError
+# import matplotlib.pyplot as plt
 
 def open(path:str) -> np.ndarray:
     """Attempts to load an image file and returns an ndarray
@@ -63,6 +64,12 @@ def show(img):
         ImageSaveError: Raised when something goes wrong saving the image 
     """
     try:
+        # _, ax = plt.subplots(1,2)
+        # ax[0].imshow(img[1])
+        # ax[1].imshow(img[0])
+        # plt.show()
+
+
         if not ImageShow.show(Image.fromarray(img)):
             raise ImageShowError("Failed to show image")
     except Exception as e:

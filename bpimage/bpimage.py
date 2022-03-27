@@ -17,7 +17,7 @@ def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray:
     size = (radius*2)+1 
     boxkern = np.full(np.full(2,size), 1/size**2, dtype=np.float32)
 
-    return _clip(_convolve_skip_boundary(img.astype(np.float32),_kern3d(edge2)))
+    return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
 
 def _convolve_slow(img,kern):
     """naive convolve operation using loops, very slow."""
@@ -48,6 +48,21 @@ def _convolve_skip_boundary(img,kern):
             dest[y,x] = np.sum(img[y-krad:y+krad+1,x-krad:x+krad+1]*kern, axis=(0,1))
             
     return dest
+
+def _convolve_padded(img, kern):
+    """convolve that extends the image boundaries via padding"""
+    dest = np.empty_like(img)
+    krad = kern.shape[0] // 2
+    kh,kw = kern.shape[:2]
+    pad = np.pad(img,((krad,krad),(krad,krad),(0,0)),'edge')
+
+    for y in range(img.shape[0]):
+        for x in range(img.shape[1]):
+            dest[y,x] = np.sum(pad[y:y+kh,x:x+kw]*kern, axis=(0,1))
+
+    return dest
+
+
     
 def _clip(img):
     # return (img * 255.0).astype(np.uint8)

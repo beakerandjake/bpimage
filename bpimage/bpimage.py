@@ -1,8 +1,7 @@
 
 from calendar import c
-from cgi import print_exception
 import numpy as np
-
+from cprof import cprof
 
 # boxblur = np.full((9,9), 1/81, dtype=np.float32)
 # gaussian = np.array([[1,2,1],[2,4,2],[1,2,1]], dtype=np.float32) / 16
@@ -11,14 +10,15 @@ import numpy as np
 # top_sobel = np.array([[1,2,1],[0,0,0],[-1,-2,-1]], dtype=np.float32)
 # sharpen = np.array([[0,-1,0],[-1,5,-1],[0,-1,0]], dtype=np.float32)
 
-def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray :  
+@cprof('profram.prof')
+def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray:  
     if radius < 1:
         return img
     
     size = (radius*2)+1 
     boxkern = np.full(np.full(2,size), 1/size**2, dtype=np.float32)
 
-    return _convolve(img.astype(np.float32), boxkern)
+    return _clip(_convolve(img.astype(np.float32), boxkern))
 
 def _convolve(img,kernel):
     dest = np.empty_like(img)
@@ -44,7 +44,10 @@ def _convolve(img,kernel):
             dest[y,x] = acc
             # print('---')
 
-    return np.clip(dest,0,255).astype(np.uint8)
+    return dest
 
 def _clamp(n,max_n):
     return max(0,min(n, max_n))
+
+def _clip(img):
+    return np.clip(img,0,255).astype(np.uint8)

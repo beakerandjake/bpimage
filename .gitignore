@@ -128,5 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# cprofile dumps
+# profiling dumps
 *.prof
+*.lprof

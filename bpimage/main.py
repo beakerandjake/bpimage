@@ -22,7 +22,7 @@ def process_img(args):
     img = io_utils.open(args.source)
 
     if(args.blur):
-        img = bpimage.blur(img)
+        img = bpimage.boxblur(img,1)
 
     if(args.output):
         io_utils.save(img, args.output)

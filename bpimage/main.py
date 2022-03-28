@@ -19,7 +19,7 @@ def parse_args():
     # filters
     parser.add_argument('-b','--blur', action='store_true', help='blurs the source image')
     parser.add_argument('-s','--sharpen', action='store_true', help='sharpen the source image')
-    parser.add_argument('-ed','--edgedetect', action='store_true', help='edge detect the source image')
+    parser.add_argument('-out','--outline', action='store_true', help='edge detect the source image')
     parser.add_argument('-e','--emboss', action='store_true', help='emboss the source image')
 
     if len(sys.argv) < 2:
@@ -37,8 +37,8 @@ def process_img(args):
     if(args.sharpen):
         img = bpimage.sharpen(img)
     
-    if(args.edgedetect):
-        img = bpimage.edge_detect(img)
+    if(args.outline):
+        img = bpimage.outline(img)
     
     if(args.emboss):
         img = bpimage.emboss(img)

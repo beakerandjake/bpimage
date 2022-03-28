@@ -1,27 +1,53 @@
 import numpy as np
 
-def edge_detect(img:np.ndarray) -> np.ndarray:
+def outline(img:np.ndarray) -> np.ndarray:
+    """Applies an edge detection kernel to the image. 
+
+    Args:
+        img: The image to apply the operation to. 
+
+    Returns:
+        A new ndarray containing the result of the edge detection operation
+    """
     kern = np.array([[-1,-1,-1],
                      [-1, 8,-1],
                      [-1,-1,-1]], dtype=np.float32)
     return _clip(_convolve_padded(img.astype(np.float32),_kern3d(kern)))
 
 def sharpen(img:np.ndarray) -> np.ndarray:
-    kern = np.array([[1, 1, 1],
-                     [1,-7, 1],
-                     [1, 1, 1]], dtype=np.float32)
+    """Applies a sharpening kernel to the image. 
+
+    Args:
+        img: The image to sharpen. 
+
+    Returns:
+        A new ndarray containing the result of the sharpening operation
+    """
+    kern = np.array([[ 0,-1, 0],
+                     [-1, 5,-1],
+                     [ 0,-1, 0]], dtype=np.float32)
     return _clip(_convolve_padded(img.astype(np.float32),_kern3d(kern)))
 
 def emboss(img:np.ndarray) -> np.ndarray:
-    kern = np.array([[2, 0, 0],
-                     [0,-1, 0],
-                     [0, 0,-1]], dtype=np.float32)
+    """Applies an emboss kernel to the image. 
+
+    Args:
+        img: The image to emboss. 
+
+    Returns:
+        A new ndarray containing the result of the emboss operation
+    """
+    kern = np.array([[ 0, 1, 0],
+                     [ 1, 0,-1],
+                     [ 0,-1, 0]], dtype=np.float32)
     return _clip(_convolve_padded(img.astype(np.float32),_kern3d(kern),bias=128.0))
+
+
 
 def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray:  
     if radius < 1:
         return img
-        
+
     size = (radius*2)+1 
     boxkern = np.full(np.full(2,size), 1/size**2, dtype=np.float32)
 

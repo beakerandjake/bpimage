@@ -1,5 +1,23 @@
 import numpy as np
 
+def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray: 
+    """Applies a box blur of the specified size to the image. 
+
+    Args:
+        img: The image to blur.
+        radius: number of pixels to take in each direction. a radius of zero or below does nothing
+
+    Returns:
+        A new ndarray containing the result of the blur operation
+    """
+    if radius < 1:
+        return img
+
+    size = (radius*2)+1 
+    boxkern = np.full(np.full(2,size), 1/size**2, dtype=np.float32)
+
+    return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
+
 def outline(img:np.ndarray) -> np.ndarray:
     """Applies an edge detection kernel to the image. 
 
@@ -37,21 +55,46 @@ def emboss(img:np.ndarray) -> np.ndarray:
     Returns:
         A new ndarray containing the result of the emboss operation
     """
-    kern = np.array([[ 0, 1, 0],
+    kern = np.array([[ 1, 1, 0],
                      [ 1, 0,-1],
-                     [ 0,-1, 0]], dtype=np.float32)
+                     [ 0,-1,-1]], dtype=np.float32)
+    # kern = np.array([[ 1, 0, 1, 0, 0],
+    #                  [ 0, 1, 1, 0, 0],
+    #                  [ 1, 1, 0,-1,-1],
+    #                  [ 0, 0,-1,-1, 0],
+    #                  [ 0, 0,-1, 0,-1]], dtype=np.float32)
     return _clip(_convolve_padded(img.astype(np.float32),_kern3d(kern),bias=128.0))
 
+def motion_blur(img:np.ndarray) -> np.ndarray:
+    """Applies motion blur to the image. 
 
+    Args:
+        img: The image to blur. 
 
-def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray:  
-    if radius < 1:
-        return img
+    Returns:
+        A new ndarray containing the result of the motion blur operation
+    """
+    size = 9
+    kern = np.zeros((size,size), dtype=np.float32)
+    np.fill_diagonal(np.fliplr(kern), (1/size))
 
-    size = (radius*2)+1 
-    boxkern = np.full(np.full(2,size), 1/size**2, dtype=np.float32)
+    return _clip(_convolve_padded(img.astype(np.float32),_kern3d(kern)))
 
-    return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
+def smooth(img:np.ndarray) -> np.ndarray:
+    """Applies a smoothing kernel to the image. 
+
+    Args:
+        img: The image to smooth. 
+
+    Returns:
+        A new ndarray containing the result of the smooth operation
+    """
+    kern = np.array([[1, 1,  1, 1, 1],
+                     [1, 5,  5, 5, 1],
+                     [1, 5, 44, 5, 1],
+                     [1, 5,  5, 5, 1],
+                     [1, 1,  1, 1, 1]], dtype=np.float32) / 100
+    return _clip(_convolve_padded(img.astype(np.float32),_kern3d(kern)))
 
 def _convolve_padded(img, kern,bias=0.0):
     """convolve that extends the image boundaries via padding"""
@@ -85,7 +128,6 @@ def _convolve_slow(img,kern):
             for ky in range(kh):
                 for kx in range(kw):
                     dest[y,x] += kern[ky,kx] * img[_clamp(y+ky-kpad,h-1),_clamp(x+kx-kpad,w-1)]
-                    # print(f'kernel: ({(ky,kx)}) = {kern[ky,kx]} -> offset: {oy,ox} -> window: {(wy,wx)} -> pmod: {pix} -> acc: {acc}'
     return dest
 
 def _clamp(n,max_n):

@@ -10,6 +10,7 @@ import bpimage
 # output file with before/after for debigging
 # convolve in c and call from python
 # pass arguments to filters
+# sobel filter
 
 def parse_args():
     parser = ArgumentParser(description="CLI for bpimage library")
@@ -21,6 +22,8 @@ def parse_args():
     parser.add_argument('-s','--sharpen', action='store_true', help='sharpen the source image')
     parser.add_argument('-out','--outline', action='store_true', help='edge detect the source image')
     parser.add_argument('-e','--emboss', action='store_true', help='emboss the source image')
+    parser.add_argument('-m','--motionblur', action='store_true', help='motion blur the source image')
+    parser.add_argument('-sm','--smooth', action='store_true', help='smooth the source image')
 
     if len(sys.argv) < 2:
         parser.print_help(sys.stderr)
@@ -32,7 +35,7 @@ def process_img(args):
     img = io_utils.open(args.source)
 
     if(args.blur):
-        img = bpimage.boxblur(img,1)
+        img = bpimage.boxblur(img,6)
     
     if(args.sharpen):
         img = bpimage.sharpen(img)
@@ -42,6 +45,12 @@ def process_img(args):
     
     if(args.emboss):
         img = bpimage.emboss(img)
+
+    if(args.motionblur):
+        img = bpimage.motion_blur(img)
+
+    if(args.smooth):
+        img = bpimage.smooth(img)
 
     if(args.output):
         io_utils.save(img, args.output)

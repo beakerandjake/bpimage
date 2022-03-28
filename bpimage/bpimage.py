@@ -1,4 +1,32 @@
 import numpy as np
+from ctypes import cdll
+
+# overall vision 
+# use config to choose convolve implementation in python or in c
+# add setup.py for end users
+# 
+# todo
+# set argtypes and restype
+# 
+# implementation iteration
+# 1. pass 1d numpy array in
+#        iterate the array and print
+#        change a value
+# 2. pass 2d numpy array in
+#        iterate the array and print
+#        change a value
+# 3. pass 3d numpy array in
+#        iterate the array and print
+#        change a value
+# 4. pass actual arguments img, kernel, bias
+# 5. probably want to also pass destination as argument instead of trying to allocate new array in c....
+# 6. once actual arguments are in, iterate every pixel and calculate window
+# 7. set every pixel in destination to source value
+# 7. determine how to handle boundaries? assume array is padded? or use c to extend indexes? 
+# 8. actually do the convolve.. 
+lib = cdll.LoadLibrary('./convolve.so')
+result = lib.add(1,65)
+
 
 def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray: 
     """Applies a box blur of the specified size to the image. 

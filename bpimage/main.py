@@ -11,6 +11,7 @@ import bpimage
 # convolve in c and call from python
 # pass arguments to filters
 # sobel filter
+# decorator to validate image input as rgb? 
 
 def parse_args():
     parser = ArgumentParser(description="CLI for bpimage library")

@@ -1,8 +1,12 @@
 #include <stdio.h>
 
-int add(int lhs, int rhs)
+int fn(int *arr, int size)
 {
-    int result = lhs + rhs;
-    printf("adding %i and %i result = %i\n", lhs, rhs, result);
-    return result;
+    int i;
+    int sum = 0;
+    for (i = 0; i < size; i++) 
+    {
+        sum += arr[i];
+    }
+    return sum;
 }

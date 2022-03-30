@@ -1,5 +1,5 @@
+import ctypes
 import numpy as np
-from ctypes import cdll
 
 # overall vision 
 # use config to choose convolve implementation in python or in c
@@ -24,9 +24,13 @@ from ctypes import cdll
 # 7. set every pixel in destination to source value
 # 7. determine how to handle boundaries? assume array is padded? or use c to extend indexes? 
 # 8. actually do the convolve.. 
-lib = cdll.LoadLibrary('./convolve.so')
-result = lib.add(1,65)
-
+lib = ctypes.cdll.LoadLibrary('./convolve.so')
+fn = lib.fn
+fn.restype = ctypes.c_int
+fn.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
+arr = [1,2,3,4,5]
+result = lib.fn((ctypes.c_int * len(arr))(*arr),len(arr))
+print('result:', result)
 
 def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray: 
     """Applies a box blur of the specified size to the image. 

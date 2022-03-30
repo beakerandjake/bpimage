@@ -24,13 +24,6 @@ import numpy as np
 # 7. set every pixel in destination to source value
 # 7. determine how to handle boundaries? assume array is padded? or use c to extend indexes? 
 # 8. actually do the convolve.. 
-lib = ctypes.cdll.LoadLibrary('./convolve.so')
-fn = lib.fn
-fn.restype = ctypes.c_int
-fn.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
-arr = [1,2,3,4,5]
-result = lib.fn((ctypes.c_int * len(arr))(*arr),len(arr))
-print('result:', result)
 
 def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray: 
     """Applies a box blur of the specified size to the image. 
@@ -48,7 +41,8 @@ def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray:
     size = (radius*2)+1 
     boxkern = np.full(np.full(2,size), 1/size**2, dtype=np.float32)
 
-    return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
+    return _convolve_c(img.astype(np.float32),boxkern)
+    # return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
 
 def outline(img:np.ndarray) -> np.ndarray:
     """Applies an edge detection kernel to the image. 
@@ -176,3 +170,15 @@ def _convolve_skip_boundary(img,kern):
             dest[y,x] = np.sum(img[y-krad:y+krad+1,x-krad:x+krad+1]*kern, axis=(0,1))
             
     return dest
+
+def _convolve_c(img:np.ndarray, kern:np.ndarray, bias=0.0) -> np.ndarray:
+    # load the library function and configure
+    lib = ctypes.cdll.LoadLibrary('./convolve.so')
+    lib.fn.restype = None
+    lib.fn.argtypes = [np.ctypeslib.ndpointer(np.float32, ndim=2), ctypes.POINTER(np.ctypeslib.c_intp), ctypes.POINTER(np.ctypeslib.c_intp)]
+
+    arr = np.arange(15, dtype=np.float32).reshape(5,3)
+    result = lib.fn(arr, arr.ctypes.strides, arr.ctypes.shape)
+    print('result:', result)
+
+    return img

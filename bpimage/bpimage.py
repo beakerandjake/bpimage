@@ -177,8 +177,8 @@ def _convolve_c(img:np.ndarray, kern:np.ndarray, bias=0.0) -> np.ndarray:
     lib.fn.restype = None
     lib.fn.argtypes = [np.ctypeslib.ndpointer(np.float32, ndim=3), ctypes.POINTER(np.ctypeslib.c_intp), ctypes.POINTER(np.ctypeslib.c_intp)]
 
-    print(img)
+    print('before',img)
     result = lib.fn(img, img.ctypes.strides, img.ctypes.shape)
-    print('result:', result)
+    print('after',img)
 
     return img

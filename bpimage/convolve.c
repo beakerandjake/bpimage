@@ -15,6 +15,8 @@ void fn(float *img, ssize_t *strides, ssize_t *dims)
     printf("sizeof(float) = %zd\n", sizeof(float));
     printf("strides converted: (%zd,%zd)\n", stride_0, stride_1);
 
+    img[2*stride_0+0*stride_1+1*stride_2] = 66.0;
+
     for (y = 0; y < img_h; y++)
     {
         for (x = 0; x < img_w; x++)

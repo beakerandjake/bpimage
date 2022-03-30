@@ -41,7 +41,7 @@ def boxblur(img:np.ndarray, radius:int=1) -> np.ndarray:
     size = (radius*2)+1 
     boxkern = np.full(np.full(2,size), 1/size**2, dtype=np.float32)
 
-    return _convolve_c(img.astype(np.float32),boxkern)
+    return _clip(_convolve_c(img.astype(np.float32),boxkern))
     # return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
 
 def outline(img:np.ndarray) -> np.ndarray:
@@ -176,9 +176,8 @@ def _convolve_c(img:np.ndarray, kern:np.ndarray, bias=0.0) -> np.ndarray:
     lib = ctypes.cdll.LoadLibrary('./convolve.so')
     lib.fn.restype = None
     lib.fn.argtypes = [np.ctypeslib.ndpointer(np.float32, ndim=3), ctypes.POINTER(np.ctypeslib.c_intp), ctypes.POINTER(np.ctypeslib.c_intp)]
-
-    print('before',img)
-    result = lib.fn(img, img.ctypes.strides, img.ctypes.shape)
-    print('after',img)
+    
+    lib.fn(img, img.ctypes.strides, img.ctypes.shape)
+    # img[:,:,:2] = 0.0
 
     return img

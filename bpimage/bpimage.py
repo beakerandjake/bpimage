@@ -175,10 +175,10 @@ def _convolve_c(img:np.ndarray, kern:np.ndarray, bias=0.0) -> np.ndarray:
     # load the library function and configure
     lib = ctypes.cdll.LoadLibrary('./convolve.so')
     lib.fn.restype = None
-    lib.fn.argtypes = [np.ctypeslib.ndpointer(np.float32, ndim=2), ctypes.POINTER(np.ctypeslib.c_intp), ctypes.POINTER(np.ctypeslib.c_intp)]
+    lib.fn.argtypes = [np.ctypeslib.ndpointer(np.float32, ndim=3), ctypes.POINTER(np.ctypeslib.c_intp), ctypes.POINTER(np.ctypeslib.c_intp)]
 
-    arr = np.arange(15, dtype=np.float32).reshape(5,3)
-    result = lib.fn(arr, arr.ctypes.strides, arr.ctypes.shape)
+    print(img)
+    result = lib.fn(img, img.ctypes.strides, img.ctypes.shape)
     print('result:', result)
 
     return img

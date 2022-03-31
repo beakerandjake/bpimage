@@ -38,15 +38,20 @@ void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *
                 for (kx = 0; kx < kern_width; kx++)
                 {
                     kval = kern[ks0 * ky + ks1 * kx];
+                    wy = y+ky-kern_rad;
+                    wx = x+kx-kern_rad;
                     
-                    // get the index of the pixel which corresponds to current kernel
-                    wy = clamp(y + ky - kern_rad, height - 1);
-                    wx = clamp(x + kx - kern_rad, width - 1);
-                    window_offset = wy * s0 + wx * s1;
+                    if ((wy >= 0 && wy < height) && (wx >= 0 && wx < width))
+                    {
+                        window_offset = wy * s0 + wx * s1;
+                        r += img[window_offset] * kval;
+                        g += img[window_offset + 1] * kval;
+                        b += img[window_offset + 2] * kval;
+                    } 
 
-                    r += img[window_offset] * kval;
-                    g += img[window_offset + 1] * kval;
-                    b += img[window_offset + 2] * kval;
+                    // // get the index of the pixel which corresponds to current kernel
+                    // wy = clamp(y + ky - kern_rad, height - 1);
+                    // wx = clamp(x + kx - kern_rad, width - 1);
                 }
             }
 

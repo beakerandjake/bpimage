@@ -36,7 +36,7 @@ def process_img(args):
     img = io_utils.open(args.source)
 
     if(args.blur):
-        img = bpimage.boxblur(img,6)
+        img = bpimage.boxblur(img,1)
     
     if(args.sharpen):
         img = bpimage.sharpen(img)

@@ -24,8 +24,6 @@ import numpy as np
 # 7. set every pixel in destination to source value
 # 7. determine how to handle boundaries? assume array is padded? or use c to extend indexes?
 # 8. actually do the convolve..
-
-
 def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
     """Applies a box blur of the specified size to the image.
 
@@ -39,12 +37,14 @@ def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
     if radius < 1:
         return img
 
-    size = (radius*2)+1
-    boxkern = np.full(np.full(2, size), 1/size**2, dtype=np.float32)
+    # size = (radius*2)+1
+    # boxkern = np.full(np.full(2, size), 1/size**2, dtype=np.float32)
+    # print(boxkern)
+    boxkern = np.linspace(0,1,9,dtype=np.float32).reshape(3,3)
+    print(boxkern)
 
     return _clip(_convolve_c(img.astype(np.float32), boxkern))
     # return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
-
 
 def outline(img: np.ndarray) -> np.ndarray:
     """Applies an edge detection kernel to the image.
@@ -60,7 +60,6 @@ def outline(img: np.ndarray) -> np.ndarray:
                      [-1, -1, -1]], dtype=np.float32)
     return _clip(_convolve_padded(img.astype(np.float32), _kern3d(kern)))
 
-
 def sharpen(img: np.ndarray) -> np.ndarray:
     """Applies a sharpening kernel to the image.
 
@@ -74,7 +73,6 @@ def sharpen(img: np.ndarray) -> np.ndarray:
                      [-1, 5, -1],
                      [0, -1, 0]], dtype=np.float32)
     return _clip(_convolve_padded(img.astype(np.float32), _kern3d(kern)))
-
 
 def emboss(img: np.ndarray) -> np.ndarray:
     """Applies an emboss kernel to the image.
@@ -95,7 +93,6 @@ def emboss(img: np.ndarray) -> np.ndarray:
     #                  [ 0, 0,-1, 0,-1]], dtype=np.float32)
     return _clip(_convolve_padded(img.astype(np.float32), _kern3d(kern), bias=128.0))
 
-
 def motion_blur(img: np.ndarray) -> np.ndarray:
     """Applies motion blur to the image.
 
@@ -110,7 +107,6 @@ def motion_blur(img: np.ndarray) -> np.ndarray:
     np.fill_diagonal(np.fliplr(kern), (1/size))
 
     return _clip(_convolve_padded(img.astype(np.float32), _kern3d(kern)))
-
 
 def smooth(img: np.ndarray) -> np.ndarray:
     """Applies a smoothing kernel to the image.
@@ -128,7 +124,6 @@ def smooth(img: np.ndarray) -> np.ndarray:
                      [1, 1,  1, 1, 1]], dtype=np.float32) / 100
     return _clip(_convolve_padded(img.astype(np.float32), _kern3d(kern)))
 
-
 def _convolve_padded(img, kern, bias=0.0):
     """convolve that extends the image boundaries via padding"""
     dest = np.empty_like(img)
@@ -142,15 +137,12 @@ def _convolve_padded(img, kern, bias=0.0):
 
     return dest
 
-
 def _clip(img):
     # return (img * 255.0).astype(np.uint8)
     return np.clip(img, 0, 255).astype(np.uint8)
 
-
 def _kern3d(kern1d):
     return np.repeat(kern1d[..., None], 3, axis=-1)
-
 
 def _convolve_slow(img, kern):
     """naive convolve operation using loops, very slow."""
@@ -167,10 +159,8 @@ def _convolve_slow(img, kern):
                         img[_clamp(y+ky-kpad, h-1), _clamp(x+kx-kpad, w-1)]
     return dest
 
-
 def _clamp(n, max_n):
     return max(0, min(n, max_n))
-
 
 def _convolve_skip_boundary(img, kern):
     """convolve that ignores the boundaries, faster than _convolve_slow"""
@@ -185,7 +175,6 @@ def _convolve_skip_boundary(img, kern):
 
     return dest
 
-
 def _convolve_c(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     # load the library function and configure
     lib = ctypes.cdll.LoadLibrary('./convolve.so')
@@ -197,7 +186,7 @@ def _convolve_c(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
                        ctypes.POINTER(np.ctypeslib.c_intp),
                        ctypes.POINTER(np.ctypeslib.c_intp)]
 
-    print(kern.strides)
+    print(img)
     lib.fn(img, img.ctypes.strides, img.ctypes.shape, kern, kern.ctypes.strides, kern.ctypes.shape)
     # img[:,:,:2] = 0.0
 

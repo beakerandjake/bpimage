@@ -37,11 +37,8 @@ def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
     if radius < 1:
         return img
 
-    # size = (radius*2)+1
-    # boxkern = np.full(np.full(2, size), 1/size**2, dtype=np.float32)
-    # print(boxkern)
-    boxkern = np.linspace(0,1,9,dtype=np.float32).reshape(3,3)
-    print(boxkern)
+    size = (radius*2)+1
+    boxkern = np.full(np.full(2, size), 1/size**2, dtype=np.float32)
 
     return _clip(_convolve_c(img.astype(np.float32), boxkern))
     # return _clip(_convolve_padded(img.astype(np.float32),_kern3d(boxkern)))
@@ -184,10 +181,12 @@ def _convolve_c(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
                        ctypes.POINTER(np.ctypeslib.c_intp),
                        np.ctypeslib.ndpointer(np.float32, ndim=2),
                        ctypes.POINTER(np.ctypeslib.c_intp),
-                       ctypes.POINTER(np.ctypeslib.c_intp)]
+                       ctypes.POINTER(np.ctypeslib.c_intp),
+                       np.ctypeslib.ndpointer(np.float32, ndim=3)]
 
-    print(img)
-    lib.fn(img, img.ctypes.strides, img.ctypes.shape, kern, kern.ctypes.strides, kern.ctypes.shape)
+    # print(img)
+    dest = np.zeros_like(img)
+    lib.fn(img, img.ctypes.strides, img.ctypes.shape, kern, kern.ctypes.strides, kern.ctypes.shape, dest)
     # img[:,:,:2] = 0.0
 
-    return img
+    return dest

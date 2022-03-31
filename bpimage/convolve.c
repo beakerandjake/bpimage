@@ -4,7 +4,7 @@ size_t clamp(ssize_t value, ssize_t max);
 
 // Expect image arrays have shape (y,x,3), of type float, in contigious c layout.
 
-void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size)
+void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float *dest)
 {
     size_t height, width, s0, s1, s2;
     height = img_size[0];
@@ -31,32 +31,39 @@ void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *
     printf("kern strides raw: (%zd,%zd,%zd)\n", kern_strides[0], kern_strides[1], kern_strides[2]);
     printf("kern strides: (%zd,%zd)\n", ks0, ks1);
 
-    size_t y, x, ky, kx, wx, wy;
-    float kval;
+    size_t y, x, ky, kx, wx, wy, pixel_offset, window_offset;
+    float kval, r, g, b;
 
     // iterate every pixel of the image
     for (y = 0; y < height; y++)
     {
         for (x = 0; x < width; x++)
         {
+            r = g = b = 0;
+            pixel_offset = y * s0 + x * s1;
+
             // iterate every cell of the kernel
             for (ky = 0; ky < kern_height; ky++)
             {
                 for (kx = 0; kx < kern_width; kx++)
                 {
                     kval = kern[ks0 * ky + ks1 * kx];
-                    // get the index of the pixel which corresponds to current kernel 
+                    // get the index of the pixel which corresponds to current kernel
                     wy = clamp(y + ky - kern_rad, height - 1);
                     wx = clamp(x + kx - kern_rad, width - 1);
+                    window_offset = wy * s0 + wx * s1;
 
-                    size_t img_pos = wy * s0 + wx * s1;
-                    float r = img[img_pos];
-                    float g = img[++img_pos];
-                    float b = img[++img_pos];
+                    r += img[window_offset] * kval;
+                    g += img[window_offset + 1] * kval;
+                    b += img[window_offset + 2] * kval;
                     // printf("img:(%zd,%zd) -> kern: (%zd,%zd) = (%f) -> offset: (%zd,%zd) -> translated: (%zd,%zd)\n", y, x, ky, kx, kval, ky - kern_rad, kx - kern_rad, wy, wx);
-                    printf("img:(%zd,%zd) -> kern: (%zd,%zd) = (%f) -> translated: (%zd,%zd) = (%f,%f,%f)\n", y, x, ky, kx, kval, wy, wx, r,g,b);
+                    // printf("img:(%zd,%zd) -> kern: (%zd,%zd) = (%f) -> translated: (%zd,%zd) = (%f,%f,%f)\n", y, x, ky, kx, kval, wy, wx, r, g, b);
                 }
             }
+
+            dest[pixel_offset] = clamp(r, 255);
+            dest[pixel_offset+1] = clamp(g, 255);
+            dest[pixel_offset+2] = clamp(b, 255);
         }
     }
     // // zero out red and green

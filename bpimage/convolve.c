@@ -19,9 +19,12 @@ void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *
     ks0 = kern_strides[0] / sizeof(float);
     ks1 = kern_strides[1] / sizeof(float);
 
+    int y,x,ky,kx;
     // iterate every pixel of the image
-
+    for (y = 0; y < height; y++)
+    {
         // iterate every pixel of the kernel 
+    }
 
             // sum the pixels 
 

@@ -27,7 +27,7 @@ import numpy as np
 
 
 def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
-    """Applies a box blur of the specified size to the image. 
+    """Applies a box blur of the specified size to the image.
 
     Args:
         img: The image to blur.
@@ -47,10 +47,10 @@ def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
 
 
 def outline(img: np.ndarray) -> np.ndarray:
-    """Applies an edge detection kernel to the image. 
+    """Applies an edge detection kernel to the image.
 
     Args:
-        img: The image to apply the operation to. 
+        img: The image to apply the operation to.
 
     Returns:
         A new ndarray containing the result of the edge detection operation
@@ -62,10 +62,10 @@ def outline(img: np.ndarray) -> np.ndarray:
 
 
 def sharpen(img: np.ndarray) -> np.ndarray:
-    """Applies a sharpening kernel to the image. 
+    """Applies a sharpening kernel to the image.
 
     Args:
-        img: The image to sharpen. 
+        img: The image to sharpen.
 
     Returns:
         A new ndarray containing the result of the sharpening operation
@@ -77,10 +77,10 @@ def sharpen(img: np.ndarray) -> np.ndarray:
 
 
 def emboss(img: np.ndarray) -> np.ndarray:
-    """Applies an emboss kernel to the image. 
+    """Applies an emboss kernel to the image.
 
     Args:
-        img: The image to emboss. 
+        img: The image to emboss.
 
     Returns:
         A new ndarray containing the result of the emboss operation
@@ -97,10 +97,10 @@ def emboss(img: np.ndarray) -> np.ndarray:
 
 
 def motion_blur(img: np.ndarray) -> np.ndarray:
-    """Applies motion blur to the image. 
+    """Applies motion blur to the image.
 
     Args:
-        img: The image to blur. 
+        img: The image to blur.
 
     Returns:
         A new ndarray containing the result of the motion blur operation
@@ -113,10 +113,10 @@ def motion_blur(img: np.ndarray) -> np.ndarray:
 
 
 def smooth(img: np.ndarray) -> np.ndarray:
-    """Applies a smoothing kernel to the image. 
+    """Applies a smoothing kernel to the image.
 
     Args:
-        img: The image to smooth. 
+        img: The image to smooth.
 
     Returns:
         A new ndarray containing the result of the smooth operation

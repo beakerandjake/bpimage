@@ -2,9 +2,12 @@
 
 #define COLOR_DEPTH 3
 
+/*
+Clamps a float value to be between the min and max of an unsigned char
+ */
 float clamp(float value);
 
-/* 
+/*
 Applies a convolution kernel to the image and writes the result to the destination image.
 
 @param img_padded: A version of the source image padded on all sides by the kernel.
@@ -14,7 +17,7 @@ Expected to be in contigious row major layout.
 @param kern: The convolution kernel to apply to the image.
 Expected to be a contigious 2 dimensional array in row major order with shape (N,N) where N is an odd number > 1
 
-@param dest: The destination image to write the results to. 
+@param dest: The destination image to write the results to.
 Expected to have the same shape as the original unpadded image. (img height, img width, 3)
 Expected to be in contigious row major layout.
 
@@ -24,23 +27,17 @@ Expected to be in contigious row major layout.
 */
 void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float bias, size_t *dest_shape, size_t *kern_shape)
 {
-    size_t height, width, s0, s1;
+    size_t height, width, s0, s1, ps0, kern_height, kern_width;
     height = dest_shape[0];
     width = dest_shape[1];
     // calculate image strides based on image dimensions
     s1 = COLOR_DEPTH * sizeof(unsigned char);
     s0 = s1 * width;
 
-    size_t kern_rad, kern_height, kern_width, ks0, ks1;
     kern_height = kern_shape[0];
     kern_width = kern_shape[1];
-    kern_rad = (kern_height - 1) / 2;
-    // convert kernel strides from byte steps to pointer increments.
-    ks1 = 1;
-    ks0 = kern_width * 1;
 
-    size_t ps0 = (width + kern_width -1) * s1;
-    size_t ps1 = s1;
+    ps0 = (width + kern_width - 1) * s1;
 
     size_t y, x, ky, kx, wx, wy, pixel_offset, window_offset;
     float kval, r, g, b;
@@ -60,19 +57,19 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
 
                 for (kx = 0; kx < kern_width; kx++)
                 {
-                    kval = kern[ks0 * ky + ks1 * kx];
-                    wx = x + kx ;
+                    kval = kern[kern_width * ky + kx];
+                    wx = x + kx;
 
-                    window_offset = wy * ps0 + wx * ps1;
+                    window_offset = wy * ps0 + wx * s1;
                     r += img_padded[window_offset] * kval;
-                    g += img_padded[window_offset + 1] * kval;
-                    b += img_padded[window_offset + 2] * kval;
+                    g += img_padded[++window_offset] * kval;
+                    b += img_padded[++window_offset] * kval;
                 }
             }
 
             dest[pixel_offset] = clamp(r + bias);
-            dest[pixel_offset + 1] = clamp(g + bias);
-            dest[pixel_offset + 2] = clamp(b + bias);
+            dest[++pixel_offset] = clamp(g + bias);
+            dest[++pixel_offset] = clamp(b + bias);
         }
     }
 }

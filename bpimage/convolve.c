@@ -1,17 +1,23 @@
 #include <stdio.h>
 
+#define COLOR_DEPTH 3
+
 float clamp(float value);
 
 // Expect image arrays have shape (y,x,3), of type float, in contigious c layout.
 
-void convolve(unsigned char *img, size_t *img_strides, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float bias, unsigned char *dest)
+void convolve(unsigned char *img, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float bias, unsigned char *dest)
 {
     size_t height, width, s0, s1;
     height = img_size[0];
     width = img_size[1];
-    // convert imgage strides from byte steps to pointer increments
-    s0 = img_strides[0] / sizeof(unsigned char);
-    s1 = img_strides[1] / sizeof(unsigned char);
+    // calculate image strides based on image dimensions
+    s1 = COLOR_DEPTH * sizeof(unsigned char);
+    s0 = s1 * width;
+    
+    // printf("img shape: (%zd,%zd)\n", height, width);
+    // printf("strides calculated: (%zd,%zd)\n", s0, s1);
+    // printf("sizeof(unsigned char): (%zd)\n", sizeof(unsigned char));
 
     size_t kern_rad, kern_height, kern_width, ks0, ks1;
     kern_height = kern_size[0];

@@ -6,7 +6,6 @@ _convolve_clib = ctypes.cdll.LoadLibrary('./convolve.so')
 _convolve_clib.convolve.restype = None
 _convolve_clib.convolve.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
                                     ctypes.POINTER(np.ctypeslib.c_intp),
-                                    ctypes.POINTER(np.ctypeslib.c_intp),
                                     np.ctypeslib.ndpointer(np.float32, ndim=2),
                                     ctypes.POINTER(np.ctypeslib.c_intp),
                                     ctypes.POINTER(np.ctypeslib.c_intp),
@@ -138,6 +137,6 @@ def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
         raise ValueError('Image must be larger than Kernel')
 
     dest = np.zeros_like(img)
-    _convolve_clib.convolve(img, img.ctypes.strides, img.ctypes.shape, kern,
+    _convolve_clib.convolve(img, img.ctypes.shape, kern,
                             kern.ctypes.strides, kern.ctypes.shape, bias, dest)
     return dest

@@ -4,7 +4,7 @@ size_t clamp(ssize_t value, ssize_t max);
 
 // Expect image arrays have shape (y,x,3), of type float, in contigious c layout.
 
-void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float *dest)
+void convolve(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float bias, float *dest)
 {
     size_t height, width, s0, s1;
     height = img_size[0];
@@ -16,7 +16,7 @@ void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *
     size_t kern_rad, kern_height, kern_width, ks0, ks1;
     kern_height = kern_size[0];
     kern_width = kern_size[1];
-    kern_rad = (kern_height -1) / 2;
+    kern_rad = (kern_height - 1) / 2;
     // convert kernel strides from byte steps to pointer increments.
     ks0 = kern_strides[0] / sizeof(float);
     ks1 = kern_strides[1] / sizeof(float);
@@ -38,26 +38,22 @@ void fn(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *
                 for (kx = 0; kx < kern_width; kx++)
                 {
                     kval = kern[ks0 * ky + ks1 * kx];
-                    wy = y+ky-kern_rad;
-                    wx = x+kx-kern_rad;
-                    
+                    wy = y + ky - kern_rad;
+                    wx = x + kx - kern_rad;
+
                     if ((wy >= 0 && wy < height) && (wx >= 0 && wx < width))
                     {
                         window_offset = wy * s0 + wx * s1;
                         r += img[window_offset] * kval;
                         g += img[window_offset + 1] * kval;
                         b += img[window_offset + 2] * kval;
-                    } 
-
-                    // // get the index of the pixel which corresponds to current kernel
-                    // wy = clamp(y + ky - kern_rad, height - 1);
-                    // wx = clamp(x + kx - kern_rad, width - 1);
+                    }
                 }
             }
 
-            dest[pixel_offset] = clamp(r, 255);
-            dest[pixel_offset+1] = clamp(g, 255);
-            dest[pixel_offset+2] = clamp(b, 255);
+            dest[pixel_offset] = clamp(r + bias, 255);
+            dest[pixel_offset + 1] = clamp(g + bias, 255);
+            dest[pixel_offset + 2] = clamp(b + bias, 255);
         }
     }
 }
@@ -68,7 +64,6 @@ size_t clamp(ssize_t value, ssize_t max)
     const size_t ret = value < 0 ? 0 : value;
     return ret > max ? max : ret;
 }
-
 
 // printf("img shape: (%zd,%zd)\n", height, width);
 // printf("strides raw: (%zd,%zd,%zd)\n", img_strides[0], img_strides[1], img_strides[2]);

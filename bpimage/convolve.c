@@ -26,47 +26,44 @@ Expected to be in contigious row major layout.
 @param kern_shape: The shape of the kernel in format (height, width)
 */
 void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float bias, size_t *dest_shape, size_t *kern_shape)
-{
-    size_t height, width, s0, s1, ps0, kern_height, kern_width;
-    height = dest_shape[0];
-    width = dest_shape[1];
-    // calculate image strides based on image dimensions
-    s1 = COLOR_DEPTH * sizeof(unsigned char);
-    s0 = s1 * width;
+{   
+    // cache shapes 
+    size_t height = dest_shape[0];
+    size_t width = dest_shape[1];
+    size_t kheight = kern_shape[0];
+    size_t kwidth = kern_shape[1];
 
-    kern_height = kern_shape[0];
-    kern_width = kern_shape[1];
+    // calculate strides based on shapes
+    size_t s1 = COLOR_DEPTH * sizeof(unsigned char);
+    size_t s0 = s1 * width;
+    size_t ps0 = (width + kwidth - 1) * s1;
 
-    ps0 = (width + kern_width - 1) * s1;
-
-    size_t y, x, ky, kx, wx, wy, pixel_offset, window_offset;
+    size_t y, x, ky, kx, wy, pixel_offset, window_offset;
     float kval, r, g, b;
 
-    // iterate every pixel of the image
+    // iterate every pixel of the padded image
     for (y = 0; y < height; y++)
     {
         for (x = 0; x < width; x++)
         {
             r = g = b = 0;
             pixel_offset = y * s0 + x * s1;
-
+                       
             // iterate every cell of the kernel
-            for (ky = 0; ky < kern_height; ky++)
+            for (ky = 0; ky < kheight; ky++)
             {
-                wy = y + ky;
-
-                for (kx = 0; kx < kern_width; kx++)
+                wy = (y + ky) * ps0;
+                for (kx = 0; kx < kwidth; kx++)
                 {
-                    kval = kern[kern_width * ky + kx];
-                    wx = x + kx;
-
-                    window_offset = wy * ps0 + wx * s1;
+                    kval = kern[kwidth * ky + kx];
+                    window_offset = wy + (x+kx) * s1;
                     r += img_padded[window_offset] * kval;
                     g += img_padded[++window_offset] * kval;
                     b += img_padded[++window_offset] * kval;
                 }
             }
 
+            // set the pixel on the destination image. 
             dest[pixel_offset] = clamp(r + bias);
             dest[++pixel_offset] = clamp(g + bias);
             dest[++pixel_offset] = clamp(b + bias);
@@ -74,7 +71,6 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
     }
 }
 
-// Clamps a value between zero and 255
 float clamp(float value)
 {
     const float ret = value < 0 ? 0 : value;

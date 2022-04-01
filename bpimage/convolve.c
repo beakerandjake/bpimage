@@ -76,12 +76,3 @@ float clamp(float value)
     const float ret = value < 0 ? 0 : value;
     return ret > 255 ? 255 : ret;
 }
-
-// printf("img shape: (%zd,%zd)\n", height, width);
-// printf("strides raw: (%zd,%zd,%zd)\n", img_strides[0], img_strides[1], img_strides[2]);
-// printf("strides: (%zd,%zd,%zd)\n", s0, s1, s2);
-
-// printf("kern shape: (%zd,%zd)\n", kern_height, kern_width);
-// printf("kern rad: (%zd)\n", kern_rad);
-// printf("kern strides raw: (%zd,%zd,%zd)\n", kern_strides[0], kern_strides[1], kern_strides[2]);
-// printf("kern strides: (%zd,%zd)\n", ks0, ks1);

@@ -11,16 +11,6 @@ _convolve_clib.convolve.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
                                     ctypes.POINTER(np.ctypeslib.c_intp),
                                     ctypes.POINTER(np.ctypeslib.c_intp)]
 
-# overall vision
-# add setup.py for end users
-#
-# one convolve method pass in kernel object
-# add convovle error
-# handling keyboard interrupt in c?
-# explore pad vs unpad performance memory vs cpu
-#
-# take images as rgb uint8, do temp math in c as float then clamp back
-
 
 def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
     """Applies a box blur of the specified size to the image.

@@ -6,12 +6,11 @@ import bpimage
 
 # todo 
 # allow multiple filters, and execute them in a loop piping output of one to input of next
-# figure out best way to wrap / clamp values for uint8
 # output file with before/after for debigging
-# convolve in c and call from python
-# pass arguments to filters
 # sobel filter
-# decorator to validate image input as rgb? 
+# add setup.py for end users
+# add convovle error
+# handling keyboard interrupt in c?
 
 # convovle.py, transform (rotate, flip), shear, resize / thumbnail, tint, black and white, color filters
 

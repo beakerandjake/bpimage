@@ -13,6 +13,8 @@ import bpimage
 # sobel filter
 # decorator to validate image input as rgb? 
 
+# convovle.py, transform (rotate, flip), shear, resize / thumbnail, tint, black and white, color filters
+
 def parse_args():
     parser = ArgumentParser(description="CLI for bpimage library")
     parser.add_argument('source', help="source image file")
@@ -36,7 +38,7 @@ def process_img(args):
     img = io_utils.open(args.source)
 
     if(args.blur):
-        img = bpimage.boxblur(img,6)
+        img = bpimage.boxblur(img,3)
     
     if(args.sharpen):
         img = bpimage.sharpen(img)

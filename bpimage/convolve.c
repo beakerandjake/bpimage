@@ -4,8 +4,24 @@
 
 float clamp(float value);
 
-// Expect image arrays have shape (y,x,3), of type float, in contigious c layout.
+/* 
+Applies a convolution kernel to the image and writes the result to the destination image.
 
+@param img_padded: A version of the source image padded on all sides by the kernel.
+Expected to have shape of (img height + kern height -1, img width + kern width - 1, 3).
+Expected to be in contigious row major layout.
+
+@param kern: The convolution kernel to apply to the image.
+Expected to be a contigious 2 dimensional array in row major order with shape (N,N) where N is an odd number > 1
+
+@param dest: The destination image to write the results to. 
+Expected to have the same shape as the original unpadded image. (img height, img width, 3)
+Expected to be in contigious row major layout.
+
+@param bias: A constant value that is added to the result for each pixel after convolution is calculated.
+@param dest_shape: The shape of the image in format (height, width)
+@param kern_shape: The shape of the kernel in format (height, width)
+*/
 void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float bias, size_t *dest_shape, size_t *kern_shape)
 {
     size_t height, width, s0, s1;

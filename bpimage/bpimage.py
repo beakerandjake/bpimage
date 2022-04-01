@@ -5,11 +5,11 @@ import numpy as np
 _convolve_clib = ctypes.cdll.LoadLibrary('./convolve.so')
 _convolve_clib.convolve.restype = None
 _convolve_clib.convolve.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
-                                    ctypes.POINTER(np.ctypeslib.c_intp),
                                     np.ctypeslib.ndpointer(np.float32, ndim=2),
-                                    ctypes.POINTER(np.ctypeslib.c_intp),
+                                    np.ctypeslib.ndpointer(np.uint8, ndim=3),
                                     ctypes.c_float,
-                                    np.ctypeslib.ndpointer(np.uint8, ndim=3)]
+                                    ctypes.POINTER(np.ctypeslib.c_intp),
+                                    ctypes.POINTER(np.ctypeslib.c_intp)]
 
 # overall vision
 # add setup.py for end users
@@ -135,7 +135,10 @@ def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     if kern.shape > img.shape[:2]:
         raise ValueError('Image must be larger than Kernel')
 
+    krad = kern.shape[0] // 2
+    img_padded = np.pad(img, ((krad, krad), (krad, krad), (0, 0)), 'edge')
+
     dest = np.zeros_like(img)
-    _convolve_clib.convolve(img, img.ctypes.shape, kern,
-                            kern.ctypes.shape, bias, dest)
+    _convolve_clib.convolve(img_padded, kern, dest, bias,
+                            img.ctypes.shape, kern.ctypes.shape)
     return dest

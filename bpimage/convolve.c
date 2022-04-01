@@ -6,27 +6,22 @@ float clamp(float value);
 
 // Expect image arrays have shape (y,x,3), of type float, in contigious c layout.
 
-void convolve(unsigned char *img, size_t *img_size, float *kern, size_t *kern_size, float bias, unsigned char *dest)
+void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float bias, size_t *dest_shape, size_t *kern_shape)
 {
     size_t height, width, s0, s1;
-    height = img_size[0];
-    width = img_size[1];
+    height = dest_shape[0];
+    width = dest_shape[1];
     // calculate image strides based on image dimensions
     s1 = COLOR_DEPTH * sizeof(unsigned char);
     s0 = s1 * width;
-    
+
     size_t kern_rad, kern_height, kern_width, ks0, ks1;
-    kern_height = kern_size[0];
-    kern_width = kern_size[1];
+    kern_height = kern_shape[0];
+    kern_width = kern_shape[1];
     kern_rad = (kern_height - 1) / 2;
     // convert kernel strides from byte steps to pointer increments.
     ks1 = 1;
     ks0 = kern_width * 1;
-
-    printf("kern shape: (%zd,%zd)\n", kern_height, kern_width);
-    printf("kern rad: (%zd)\n", kern_rad);
-    printf("kern strides: (%zd,%zd)\n", ks0, ks1);
-    printf("sizeof(float): (%zd)\n", sizeof(float));
 
     size_t y, x, ky, kx, wx, wy, pixel_offset, window_offset;
     float kval, r, g, b;
@@ -43,7 +38,7 @@ void convolve(unsigned char *img, size_t *img_size, float *kern, size_t *kern_si
             for (ky = 0; ky < kern_height; ky++)
             {
                 wy = y + ky - kern_rad;
-                
+
                 for (kx = 0; kx < kern_width; kx++)
                 {
                     kval = kern[ks0 * ky + ks1 * kx];
@@ -52,9 +47,9 @@ void convolve(unsigned char *img, size_t *img_size, float *kern, size_t *kern_si
                     if ((wy >= 0 && wy < height) && (wx >= 0 && wx < width))
                     {
                         window_offset = wy * s0 + wx * s1;
-                        r += img[window_offset] * kval;
-                        g += img[window_offset + 1] * kval;
-                        b += img[window_offset + 2] * kval;
+                        r += img_padded[window_offset] * kval;
+                        g += img_padded[window_offset + 1] * kval;
+                        b += img_padded[window_offset + 2] * kval;
                     }
                 }
             }

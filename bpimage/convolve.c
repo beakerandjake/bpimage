@@ -1,17 +1,17 @@
 #include <stdio.h>
 
-size_t clamp(ssize_t value, ssize_t max);
+float clamp(float value);
 
 // Expect image arrays have shape (y,x,3), of type float, in contigious c layout.
 
-void convolve(float *img, size_t *img_strides, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float bias, float *dest)
+void convolve(unsigned char *img, size_t *img_strides, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float bias, unsigned char *dest)
 {
     size_t height, width, s0, s1;
     height = img_size[0];
     width = img_size[1];
     // convert imgage strides from byte steps to pointer increments
-    s0 = img_strides[0] / sizeof(float);
-    s1 = img_strides[1] / sizeof(float);
+    s0 = img_strides[0] / sizeof(unsigned char);
+    s1 = img_strides[1] / sizeof(unsigned char);
 
     size_t kern_rad, kern_height, kern_width, ks0, ks1;
     kern_height = kern_size[0];
@@ -35,10 +35,11 @@ void convolve(float *img, size_t *img_strides, size_t *img_size, float *kern, si
             // iterate every cell of the kernel
             for (ky = 0; ky < kern_height; ky++)
             {
+                wy = y + ky - kern_rad;
+                
                 for (kx = 0; kx < kern_width; kx++)
                 {
                     kval = kern[ks0 * ky + ks1 * kx];
-                    wy = y + ky - kern_rad;
                     wx = x + kx - kern_rad;
 
                     if ((wy >= 0 && wy < height) && (wx >= 0 && wx < width))
@@ -51,18 +52,18 @@ void convolve(float *img, size_t *img_strides, size_t *img_size, float *kern, si
                 }
             }
 
-            dest[pixel_offset] = clamp(r + bias, 255);
-            dest[pixel_offset + 1] = clamp(g + bias, 255);
-            dest[pixel_offset + 2] = clamp(b + bias, 255);
+            dest[pixel_offset] = clamp(r + bias);
+            dest[pixel_offset + 1] = clamp(g + bias);
+            dest[pixel_offset + 2] = clamp(b + bias);
         }
     }
 }
 
-// Clamps a value between zero and max
-size_t clamp(ssize_t value, ssize_t max)
+// Clamps a value between zero and 255
+float clamp(float value)
 {
-    const size_t ret = value < 0 ? 0 : value;
-    return ret > max ? max : ret;
+    const float ret = value < 0 ? 0 : value;
+    return ret > 255 ? 255 : ret;
 }
 
 // printf("img shape: (%zd,%zd)\n", height, width);

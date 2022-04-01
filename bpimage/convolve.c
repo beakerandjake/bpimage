@@ -23,6 +23,9 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
     ks1 = 1;
     ks0 = kern_width * 1;
 
+    size_t ps0 = (width + kern_width -1) * s1;
+    size_t ps1 = s1;
+
     size_t y, x, ky, kx, wx, wy, pixel_offset, window_offset;
     float kval, r, g, b;
 
@@ -37,20 +40,17 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
             // iterate every cell of the kernel
             for (ky = 0; ky < kern_height; ky++)
             {
-                wy = y + ky - kern_rad;
+                wy = y + ky;
 
                 for (kx = 0; kx < kern_width; kx++)
                 {
                     kval = kern[ks0 * ky + ks1 * kx];
-                    wx = x + kx - kern_rad;
+                    wx = x + kx ;
 
-                    if ((wy >= 0 && wy < height) && (wx >= 0 && wx < width))
-                    {
-                        window_offset = wy * s0 + wx * s1;
-                        r += img_padded[window_offset] * kval;
-                        g += img_padded[window_offset + 1] * kval;
-                        b += img_padded[window_offset + 2] * kval;
-                    }
+                    window_offset = wy * ps0 + wx * ps1;
+                    r += img_padded[window_offset] * kval;
+                    g += img_padded[window_offset + 1] * kval;
+                    b += img_padded[window_offset + 2] * kval;
                 }
             }
 

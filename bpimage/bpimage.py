@@ -135,6 +135,7 @@ def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     if kern.shape > img.shape[:2]:
         raise ValueError('Image must be larger than Kernel')
 
+    # pad source image for easy bounds handling at the expense of memory
     krad = kern.shape[0] // 2
     img_padded = np.pad(img, ((krad, krad), (krad, krad), (0, 0)), 'edge')
 

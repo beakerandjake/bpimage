@@ -6,7 +6,7 @@ float clamp(float value);
 
 // Expect image arrays have shape (y,x,3), of type float, in contigious c layout.
 
-void convolve(unsigned char *img, size_t *img_size, float *kern, size_t *kern_strides, size_t *kern_size, float bias, unsigned char *dest)
+void convolve(unsigned char *img, size_t *img_size, float *kern, size_t *kern_size, float bias, unsigned char *dest)
 {
     size_t height, width, s0, s1;
     height = img_size[0];
@@ -15,17 +15,18 @@ void convolve(unsigned char *img, size_t *img_size, float *kern, size_t *kern_st
     s1 = COLOR_DEPTH * sizeof(unsigned char);
     s0 = s1 * width;
     
-    // printf("img shape: (%zd,%zd)\n", height, width);
-    // printf("strides calculated: (%zd,%zd)\n", s0, s1);
-    // printf("sizeof(unsigned char): (%zd)\n", sizeof(unsigned char));
-
     size_t kern_rad, kern_height, kern_width, ks0, ks1;
     kern_height = kern_size[0];
     kern_width = kern_size[1];
     kern_rad = (kern_height - 1) / 2;
     // convert kernel strides from byte steps to pointer increments.
-    ks0 = kern_strides[0] / sizeof(float);
-    ks1 = kern_strides[1] / sizeof(float);
+    ks1 = 1;
+    ks0 = kern_width * 1;
+
+    printf("kern shape: (%zd,%zd)\n", kern_height, kern_width);
+    printf("kern rad: (%zd)\n", kern_rad);
+    printf("kern strides: (%zd,%zd)\n", ks0, ks1);
+    printf("sizeof(float): (%zd)\n", sizeof(float));
 
     size_t y, x, ky, kx, wx, wy, pixel_offset, window_offset;
     float kval, r, g, b;

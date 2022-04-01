@@ -7,20 +7,22 @@ from PIL import Image, ImageShow, UnidentifiedImageError
 # import matplotlib.pyplot as plt
 
 def open(path:str) -> np.ndarray:
-    """Attempts to load an image file and returns an ndarray
+    """Attempts to load an image file as RGB and returns an ndarray
 
     Args:
         path: filepath to the image
 
     Returns:
-        An ndarray of shape (w,h,3) containing the image data
+        An ndarray of shape (w,h,3) with dtype np.uint8 containing the RGB (0-255) image data 
 
     Raises:
         ImageOpenError: raised when something goes wrong loading the image 
     """
     try:
         with Image.open(path) as img:
-            return np.array(img)
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            return np.array(img, dtype=np.uint8)
     except IsADirectoryError as e: 
         raise ImageOpenError(f'Cannot open \'{path}\': Expected image but provided directory') from e
     except FileNotFoundError as e:

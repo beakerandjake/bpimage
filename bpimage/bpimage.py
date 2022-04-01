@@ -139,7 +139,7 @@ def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     krad = kern.shape[0] // 2
     img_padded = np.pad(img, ((krad, krad), (krad, krad), (0, 0)), 'edge')
 
-    dest = np.zeros_like(img)
+    dest = np.empty_like(img)
     _convolve_clib.convolve(img_padded, kern, dest, bias,
                             img.ctypes.shape, kern.ctypes.shape)
     return dest

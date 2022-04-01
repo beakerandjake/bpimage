@@ -47,15 +47,17 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
         for (x = 0; x < width; x++)
         {
             r = g = b = 0;
-            pixel_offset = y * s0 + x * s1;
-                       
-            // iterate every cell of the kernel
+     
+            // iterate every element of the kernel
             for (ky = 0; ky < kheight; ky++)
             {
                 wy = (y + ky) * ps0;
                 for (kx = 0; kx < kwidth; kx++)
                 {
+                    // get the kernel element. 
                     kval = kern[kwidth * ky + kx];
+
+                    // multiple the kernel element by the pixel and add to accumulated values
                     window_offset = wy + (x+kx) * s1;
                     r += img_padded[window_offset] * kval;
                     g += img_padded[++window_offset] * kval;
@@ -64,6 +66,7 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
             }
 
             // set the pixel on the destination image. 
+            pixel_offset = y * s0 + x * s1;
             dest[pixel_offset] = clamp(r + bias);
             dest[++pixel_offset] = clamp(g + bias);
             dest[++pixel_offset] = clamp(b + bias);

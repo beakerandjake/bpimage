@@ -1,3 +1,5 @@
+"""Functions for filtering images by appling kernels to each pixel using convolution"""
+
 import ctypes
 import numpy as np
 

@@ -2,10 +2,11 @@
 import sys
 from argparse import ArgumentParser
 import io_utils
-import bpimage
+import filters
 
 # todo
 # accept arguments for actions
+# bpimage module, with different files for areas
 # output file with before/after for debigging
 # sobel filter
 # add setup.py for end users
@@ -15,13 +16,13 @@ import bpimage
 # convovle.py, transform (rotate, flip), shear, resize / thumbnail, tint, black and white, color filters
 
 ACTIONS = {
-    'boxblur': bpimage.boxblur,
-    'gaussian_blur': bpimage.gaussian_blur,
-    'motion_blur': bpimage.motion_blur,
-    'sharpen': bpimage.sharpen,
-    'outline': bpimage.outline,
-    'emboss': bpimage.emboss,
-    'smooth': bpimage.smooth
+    'boxblur': filters.boxblur,
+    'gaussian_blur': filters.gaussian_blur,
+    'motion_blur': filters.motion_blur,
+    'sharpen': filters.sharpen,
+    'outline': filters.outline,
+    'emboss': filters.emboss,
+    'smooth': filters.smooth
 }
 
 

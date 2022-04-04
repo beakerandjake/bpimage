@@ -31,7 +31,7 @@ def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
     """Rotates the image counter-clockwise 90 degrees around the center.
 
     Args:
-        img: The image to rotate.
+        img: The image to rotate. Negative values are ignored. 
 
     Returns:
         A rotated view of the image

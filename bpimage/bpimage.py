@@ -11,7 +11,8 @@ _convolve_clib.convolve.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
                                     ctypes.POINTER(np.ctypeslib.c_intp),
                                     ctypes.POINTER(np.ctypeslib.c_intp)]
 
-def gaussian_blur(img:np.ndarray, radius: int=1, sig: float = 1.) -> np.ndarray:
+
+def gaussian_blur(img: np.ndarray, radius: int = 1, sig: float = 1.) -> np.ndarray:
     """Applies a gaussian blur to the image.
 
     Args:
@@ -22,20 +23,27 @@ def gaussian_blur(img:np.ndarray, radius: int=1, sig: float = 1.) -> np.ndarray:
     Returns:
         A new ndarray containing the result of the gaussian blur operation
     """
+    if radius < 1:
+        return img
+
     # generate the gaussian kernel
     # https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy
-    ax = np.linspace(-(radius - 1) / 2., (radius - 1) / 2., radius, dtype=np.float32)
+    size = (radius * 2) + 1
+    ax = np.linspace(-(size - 1) / 2., (size - 1) /
+                     2., size, dtype=np.float32)
     gauss = np.exp(-0.5 * np.square(ax) / np.square(sig))
     kern = np.outer(gauss, gauss)
     kern = kern / np.sum(kern)
+
     return _convolve(img, kern)
+
 
 def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
     """Applies a box blur of the specified size to the image.
 
     Args:
         img: The image to blur.
-        radius: number of pixels to take in each direction. a radius of zero or below does nothing
+        radius: Number of pixels to take in each direction. a radius of zero or below does nothing
 
     Returns:
         A new ndarray containing the result of the blur operation
@@ -43,11 +51,11 @@ def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
     if radius < 1:
         return img
 
-    # create a kernel with the desired radius. 
+    # create a kernel with the desired radius.
     size = (radius*2)+1
-    boxkern = np.full(np.full(2, size), 1/size**2, dtype=np.float32)
+    kern = np.full(np.full(2, size), 1/size**2, dtype=np.float32)
 
-    return _convolve(img, boxkern)
+    return _convolve(img, kern)
 
 
 def outline(img: np.ndarray) -> np.ndarray:

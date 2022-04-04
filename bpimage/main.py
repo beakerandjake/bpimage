@@ -13,6 +13,8 @@ import transform
 # add setup.py for end users
 # add convovle error
 # handling keyboard interrupt in c?
+# validate c memory layout in convolve
+# take back strides as param for img array.. can't handle views with different strides at the moment.
 
 # convovle.py, transform (rotate, flip), shear, resize / thumbnail, tint, black and white, color filters
 

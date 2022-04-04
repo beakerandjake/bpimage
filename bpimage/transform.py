@@ -10,10 +10,9 @@ def flipv(img: np.ndarray) -> np.ndarray:
         img: The image to flip.
 
     Returns:
-        A new ndarray containing the result of the flip
+        A flipped view of the image
     """
-    print('flipv')
-    return img
+    return img[:, ::-1]
 
 
 def fliph(img: np.ndarray) -> np.ndarray:
@@ -23,10 +22,9 @@ def fliph(img: np.ndarray) -> np.ndarray:
         img: The image to flip.
 
     Returns:
-        A new ndarray containing the result of the flip
+        A flipped view of the image
     """
-    print('fliph')
-    return img
+    return img[::-1, :]
 
 
 def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
@@ -36,10 +34,20 @@ def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
         img: The image to rotate.
 
     Returns:
-        A new ndarray containing the result of the rotate
+        A rotated view of the image
     """
-    print('rotate90')
-    return img
+    times = max(0, times) % 4
+    # No need to do anything if the number of rotations brings us back to the original image.
+    if times == 0:
+        return img[:]
+    # Handle 180 degree rotations
+    if times == 2:
+        return flipv(fliph(img))
+    # Handle 270 degree rotations
+    if times == 3:
+        return flipv(np.transpose(img, axes=(1, 0, 2)))
+    # Handle just 90
+    return np.transpose(flipv(img), axes=(1, 0, 2))
 
 
 def rotate(img: np.ndarray, angle: float = 1) -> np.ndarray:

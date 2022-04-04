@@ -3,6 +3,7 @@ import sys
 from argparse import ArgumentParser
 import io_utils
 import filters
+import transform
 
 # todo
 # accept arguments for actions
@@ -22,7 +23,12 @@ ACTIONS = {
     'sharpen': filters.sharpen,
     'outline': filters.outline,
     'emboss': filters.emboss,
-    'smooth': filters.smooth
+    'smooth': filters.smooth,
+    'flipv': transform.flipv,
+    'fliph': transform.fliph,
+    'rotate90': transform.rotate90,
+    'rotate': transform.rotate,
+    'rescale': transform.rescale
 }
 
 

@@ -21,6 +21,7 @@ def parse_args():
     parser.add_argument('-d','--debug', action='store_true', help='creates a temporary image and displays using the default image viewer')
     # filters
     parser.add_argument('-b','--blur', action='store_true', help='blurs the source image')
+    parser.add_argument('-g','--gaussian', action='store_true', help='applies a gaussian blur to the source image')
     parser.add_argument('-s','--sharpen', action='store_true', help='sharpen the source image')
     parser.add_argument('-out','--outline', action='store_true', help='edge detect the source image')
     parser.add_argument('-e','--emboss', action='store_true', help='emboss the source image')
@@ -47,6 +48,9 @@ def process_img(args):
     
     if(args.emboss):
         img = bpimage.emboss(img)
+
+    if(args.gaussian):
+        img = bpimage.gaussian_blur(img, radius=7, sig=12)
 
     if(args.motionblur):
         img = bpimage.motion_blur(img)

@@ -10,13 +10,16 @@ import transform
 # bpimage module, with different files for areas
 # output file with before/after for debigging
 # sobel filter
+
 # add setup.py for end users
-# add convovle error
 # handling keyboard interrupt in c?
+
+# add convovle error
 # validate c memory layout in convolve
 # take back strides as param for img array.. can't handle views with different strides at the moment.
+#   see if taking strides allows for both C or F style arrays? 
 
-# convovle.py, transform (rotate, flip), shear, resize / thumbnail, tint, black and white, color filters
+# transform rotate / shear / resize / thumbnail, tint, black and white, color filters
 
 ACTIONS = {
     'boxblur': filters.boxblur,

@@ -1,7 +1,14 @@
 """Function for appling transformations to the image such as rotation and scaling.
 """
-from typing import Union
+import ctypes
 import numpy as np
+
+# load the affine function written in c and configure so we can invoke it.
+bp_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
+bp_clib.affine_transform.restype = None
+bp_clib.affine_transform.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
+                           ctypes.POINTER(np.ctypeslib.c_intp),
+                           ctypes.POINTER(np.ctypeslib.c_intp)]
 
 
 def flipv(img: np.ndarray) -> np.ndarray:
@@ -69,7 +76,5 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     height = np.round(img.shape[0] * scale)
     width = np.round(img.shape[1] * scale)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
-
-    
-
-    return img
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides)
+    return dest

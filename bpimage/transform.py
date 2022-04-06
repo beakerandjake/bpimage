@@ -1,5 +1,6 @@
 """Function for appling transformations to the image such as rotation and scaling.
 """
+from typing import Union
 import numpy as np
 
 
@@ -64,6 +65,11 @@ def rotate(img: np.ndarray, angle: float = 1) -> np.ndarray:
     return img
 
 
-def rescale(img: np.ndarray) -> np.ndarray:
+def rescale(img: np.ndarray, scale: Union[float,np.ndarray] = 2) -> np.ndarray:
+    scale = np.atleast_1d(scale)
+
+    if scale.size > 1 and scale.size != img.ndim - 1:
+        raise ValueError('scale must specify one value per axis')
+
     print('rescale')
     return img

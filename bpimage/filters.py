@@ -4,7 +4,7 @@ import ctypes
 import numpy as np
 
 # load the convovle function written in c and configure so we can invoke it.
-_convolve_clib = ctypes.cdll.LoadLibrary('./convolve.so')
+_convolve_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
 _convolve_clib.convolve.restype = None
 _convolve_clib.convolve.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
                                     np.ctypeslib.ndpointer(np.float32, ndim=2),

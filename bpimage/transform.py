@@ -65,11 +65,11 @@ def rotate(img: np.ndarray, angle: float = 1) -> np.ndarray:
     return img
 
 
-def rescale(img: np.ndarray, scale: Union[float,np.ndarray] = 2) -> np.ndarray:
-    scale = np.atleast_1d(scale)
+def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
+    height = np.round(img.shape[0] * scale)
+    width = np.round(img.shape[1] * scale)
+    dest = np.zeros((height, width, 3), dtype=np.uint8)
 
-    if scale.size > 1 and scale.size != img.ndim - 1:
-        raise ValueError('scale must specify one value per axis')
+    
 
-    print('rescale')
     return img

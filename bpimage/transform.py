@@ -1,6 +1,7 @@
 """Function for appling transformations to the image such as rotation and scaling.
 """
 import ctypes
+import math
 import numpy as np
 
 # load the affine function written in c and configure so we can invoke it.
@@ -63,7 +64,7 @@ def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
     return np.transpose(flipv(img), axes=(1, 0, 2))
 
 
-def rotate(img: np.ndarray, angle: float = 1) -> np.ndarray:
+def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
     """Rotates the image counter-clockwise by a specified angle around the center
 
     Args:
@@ -73,22 +74,35 @@ def rotate(img: np.ndarray, angle: float = 1) -> np.ndarray:
     Returns:
         A new ndarray containing the result of the rotate
     """
-    print('rotate')
-    return img
+    dest = np.zeros(img.shape, dtype=np.uint8)
 
+    angle = math.radians(angle)
+    cos = math.cos(angle)
+    sin = math.sin(angle)
+    trans = np.linalg.inv(
+        np.array([[cos, -sin, 0],
+                  [sin, cos, 0],
+                  [0, 0, 1]], dtype=np.float32)
+    )
 
-def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
-    height = np.round(img.shape[0] * scale)
-    width = np.round(img.shape[1] * scale)
-    dest = np.zeros((height, width, 3), dtype=np.uint8)
-
-    trans = np.array([[1, 0, 0],
-                      [1, 2, 0],
-                      [0, 0, 1]], dtype=np.float32)
-    inv = np.linalg.inv(trans)
-    print(trans)
-    print(inv)
-
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, inv,
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
+
+
+def rescale(img: np.ndarray, scale: float = 1.25) -> np.ndarray:
+    height = round(img.shape[0] * scale)
+    width = round(img.shape[1] * scale)
+    dest = np.zeros((height, width, 3), dtype=np.uint8)
+
+    tform = _inverse_transform(scale_x=scale, scale_y=scale)
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
+                             dest, dest.ctypes.shape, dest.ctypes.strides)
+    return dest
+
+
+def _inverse_transform(scale_x: float = 1, skew_x: float = 0, offset_x: float = 0, scale_y: float = 1, skew_y: float = 0, offset_y: float = 0) -> np.ndarray:
+    """Generates an inverse transformation matrix with the given parameters."""
+    return np.linalg.inv(np.array([[scale_x, skew_x, offset_x],
+                                   [skew_y, scale_y, offset_y],
+                                   [0, 0, 1]], dtype=np.float32))

@@ -7,8 +7,11 @@ import numpy as np
 bp_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
 bp_clib.affine_transform.restype = None
 bp_clib.affine_transform.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
-                           ctypes.POINTER(np.ctypeslib.c_intp),
-                           ctypes.POINTER(np.ctypeslib.c_intp)]
+                                     ctypes.POINTER(np.ctypeslib.c_intp),
+                                     ctypes.POINTER(np.ctypeslib.c_intp),
+                                     np.ctypeslib.ndpointer(np.uint8, ndim=3),
+                                     ctypes.POINTER(np.ctypeslib.c_intp),
+                                     ctypes.POINTER(np.ctypeslib.c_intp)]
 
 
 def flipv(img: np.ndarray) -> np.ndarray:
@@ -76,5 +79,6 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     height = np.round(img.shape[0] * scale)
     width = np.round(img.shape[1] * scale)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides)
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides,
+                             dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest

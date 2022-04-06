@@ -6,11 +6,6 @@ import filters
 import transform
 
 # todo
-# validate c memory layout in convolve
-# take back strides as param for img array.. can't handle views with different strides at the moment.
-#   see if taking strides allows for both C or F style arrays? 
-
-
 
 # validate c memory layout in convolve
 # take back strides as param for img array.. can't handle views with different strides at the moment.

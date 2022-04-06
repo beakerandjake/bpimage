@@ -142,7 +142,6 @@ def smooth(img: np.ndarray) -> np.ndarray:
                      [1, 1,  1, 1, 1]], dtype=np.float32) / 100
     return _convolve(img, kern)
 
-
 def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     """Applies the kernel to the image, delegating the convolve to the c library.
     """
@@ -155,10 +154,9 @@ def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
         raise ValueError('Image must be larger than Kernel')
 
     # pad source image for easy bounds handling at the expense of memory
-    # this new array will also be laid out in memory how the convolve method expects
-    # allows convovle to take in arrays with different layouts or crazy strides.
+    # also ensures the new array will also be laid out in memory how the convolve method expects
     krad = kern.shape[0] // 2
-    img_padded = np.pad(img, ((krad, krad), (krad, krad), (0, 0)), 'edge')
+    img_padded = np.ascontiguousarray(np.pad(img, ((krad, krad), (krad, krad), (0, 0)), 'edge'))
 
     dest = np.empty(img.shape, dtype=np.uint8)
     _convolve_clib.convolve(img_padded, kern, dest, bias,

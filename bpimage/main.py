@@ -9,7 +9,7 @@ import transform
 
 # validate c memory layout in convolve
 # take back strides as param for img array.. can't handle views with different strides at the moment.
-#   see if taking strides allows for both C or F style arrays? 
+#   see if taking strides allows for both C or F style arrays?
 
 # accept arguments for actions
 # bpimage module, with different files for areas
@@ -59,13 +59,14 @@ def parse_args():
 def process_img(args):
     img = io_utils.open(args.source)
 
-    for action in args.action:
-        img = ACTIONS[action](img)
+    if args.action:
+        for action in args.action:
+            img = ACTIONS[action](img)
 
-    if(args.output):
+    if args.output:
         io_utils.save(img, args.output)
 
-    if(args.debug):
+    if args.debug:
         io_utils.show(img)
 
 

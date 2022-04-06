@@ -6,6 +6,16 @@ import filters
 import transform
 
 # todo
+# validate c memory layout in convolve
+# take back strides as param for img array.. can't handle views with different strides at the moment.
+#   see if taking strides allows for both C or F style arrays? 
+
+
+
+# validate c memory layout in convolve
+# take back strides as param for img array.. can't handle views with different strides at the moment.
+#   see if taking strides allows for both C or F style arrays? 
+
 # accept arguments for actions
 # bpimage module, with different files for areas
 # output file with before/after for debigging
@@ -15,9 +25,7 @@ import transform
 # handling keyboard interrupt in c?
 
 # add convovle error
-# validate c memory layout in convolve
-# take back strides as param for img array.. can't handle views with different strides at the moment.
-#   see if taking strides allows for both C or F style arrays? 
+
 
 # transform rotate / shear / resize / thumbnail, tint, black and white, color filters
 

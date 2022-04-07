@@ -6,19 +6,18 @@ import filters
 import transform
 
 # todo
-
-# validate c memory layout in convolve
-# take back strides as param for img array.. can't handle views with different strides at the moment.
-#   see if taking strides allows for both C or F style arrays?
+# memory profile c and python code
+# deprecate PIL in io_utils?
+# affine bicubic
+# affine rotate from center
+# affine skew
+# affine calculate new image size
 
 # accept arguments for actions
-# bpimage module, with different files for areas
-# output file with before/after for debigging
 # sobel filter
 
 # add setup.py for end users
 # handling keyboard interrupt in c?
-
 # add convovle error
 
 

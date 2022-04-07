@@ -12,7 +12,7 @@ import transform
 # affine rotate from center
 # affine skew
 # affine calculate new image size
-# c memcopy pixel?
+
 # c verify walking through array in cache friendly manner
 
 # accept arguments for actions

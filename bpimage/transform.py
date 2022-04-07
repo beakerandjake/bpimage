@@ -91,6 +91,9 @@ def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
 
 
 def rescale(img: np.ndarray, scale: float = 1.25) -> np.ndarray:
+    if(scale <= 0):
+        raise ValueError('Scale must be greater than zero')
+
     height = round(img.shape[0] * scale)
     width = round(img.shape[1] * scale)
     dest = np.zeros((height, width, 3), dtype=np.uint8)

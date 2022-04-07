@@ -14,10 +14,8 @@ void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides
 
     float a0 = inv_transform[0];
     float a1 = inv_transform[1];
-    float a2 = inv_transform[2];
     float b0 = inv_transform[3];
     float b1 = inv_transform[4];
-    float b2 = inv_transform[5];
     float c0 = inv_transform[6];
     float c1 = inv_transform[7];
 

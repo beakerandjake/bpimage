@@ -34,6 +34,7 @@ void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides
         for (x1 = 0; x1 < dest_width; x1++)
         {
             // calculate the location of the source pixel by applying the inverse transformation matrix.
+            // since x and y are integer types this will have the effect of simple rounding to the nearest neighbor.
             x = x1 * a0 + y1 * b0 + c0;
             y = x1 * a1 + y1 * b1 + c1;
 

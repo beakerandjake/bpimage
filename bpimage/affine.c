@@ -49,12 +49,3 @@ void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides
         }
     }
 }
-
-// printf("transform\n");
-// printf("[%f,%f,%f]\n", a0, a1, a2);
-// printf("[%f,%f,%f]\n", b0, b1, b2);
-// printf("[%f,%f,%f]\n", c0, c1, 0);
-// printf("5/2 = {%ld}\n", (size_t)(.5 * 5));
-
-// printf("img strides (%ld,%ld)", s0,s1);
-// printf("img shape (%ld,%ld)", img_height,img_width);

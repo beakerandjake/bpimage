@@ -23,8 +23,8 @@ void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides
     float b0 = inv_transform[3];
     float b1 = inv_transform[4];
     // x and y offset
-    float c0 = inv_transform[6];
-    float c1 = inv_transform[7];
+    float c0 = inv_transform[2];
+    float c1 = inv_transform[5];
 
     size_t x1, y1, x, y;
 

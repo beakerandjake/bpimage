@@ -6,10 +6,8 @@ import filters
 import transform
 
 # todo
-# memory profile c and python code
 # deprecate PIL in io_utils?
 # affine bicubic
-# affine rotate from center
 # affine skew
 # affine calculate new image size
 

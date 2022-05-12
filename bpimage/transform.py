@@ -26,6 +26,17 @@ def flipv(img: np.ndarray) -> np.ndarray:
     Returns:
         A flipped view of the image
     """
+    dest = np.zeros(img.shape, dtype=np.uint8)
+
+    tform = np.array([[-1,0,img.shape[1] - 1],
+                      [0,1,0],
+                      [0,0,1]], dtype=np.float32)
+
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
+                             dest, dest.ctypes.shape, dest.ctypes.strides)
+    return dest
+
+
     return img[:, ::-1]
 
 
@@ -64,7 +75,7 @@ def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
     return np.transpose(flipv(img), axes=(1, 0, 2))
 
 
-def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
+def rotate(img: np.ndarray, angle: float = 180) -> np.ndarray:
     """Rotates the image counter-clockwise by a specified angle around the center
 
     Args:
@@ -76,14 +87,19 @@ def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
+    # get center coordinates of image so we can roate around it
+    cx = img.shape[1] // 2
+    cy = img.shape[0] // 2
+
+    # convert angle to rads and precalculate values
     angle = math.radians(angle)
     cos = math.cos(angle)
     sin = math.sin(angle)
-    trans = np.linalg.inv(
-        np.array([[cos, -sin, 0],
-                  [sin, cos, 0],
-                  [0, 0, 1]], dtype=np.float32)
-    )
+
+    # calculate an affine transformation that rotates from the center
+    trans = np.array([[cos, sin,  cx * sin - cy * cos + cx],
+                      [-sin,  cos, -cx * cos - cy * sin + cy],
+                      [0, 0, 1]], dtype=np.float32)
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)

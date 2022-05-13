@@ -35,7 +35,8 @@ ACTIONS = {
     'fliph': transform.fliph,
     'rotate90': transform.rotate90,
     'rotate': transform.rotate,
-    'rescale': transform.rescale
+    'rescale': transform.rescale,
+    'shear': transform.shear
 }
 
 

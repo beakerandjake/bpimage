@@ -28,9 +28,9 @@ def flipv(img: np.ndarray) -> np.ndarray:
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
-    trans = np.array([[-1,0,img.shape[1] - 1],
-                      [0,1,0],
-                      [0,0,1]], dtype=np.float32)
+    trans = np.array([[-1, 0, img.shape[1] - 1],
+                      [0, 1, 0],
+                      [0, 0, 1]], dtype=np.float32)
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
@@ -48,9 +48,9 @@ def fliph(img: np.ndarray) -> np.ndarray:
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
-    trans = np.array([[1,0,0],
-                      [0,-1,img.shape[0] - 1],
-                      [0,0,1]], dtype=np.float32)
+    trans = np.array([[1, 0, 0],
+                      [0, -1, img.shape[0] - 1],
+                      [0, 0, 1]], dtype=np.float32)
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
@@ -61,8 +61,8 @@ def rotate90(img: np.ndarray, times: int = 4) -> np.ndarray:
     """Rotates the image counter-clockwise 90 degrees around the center.
 
     Args:
-        img: The image to rotate. Negative values are ignored. 
-        times: a number representing the number of times that the image should be rotated 90 degrees.
+        img: The image to rotate.  
+        times: The number of times that the image should be rotated 90 degrees.
 
     Returns:
         A new ndarray of the source image rotated 90 degree n times.
@@ -116,6 +116,16 @@ def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
 
 
 def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
+    """Re-sizes the image uniformly based on a scale factor
+
+    Args:
+        img: The image to scale.
+        scale: Non-zero positive number multiplied by the width and height of the image
+            to determine the dimensions of the resulting image.  
+
+    Returns:
+        A new ndarray containing the result of the scale
+    """
     if(scale <= 0):
         raise ValueError('Scale must be greater than zero')
 
@@ -124,17 +134,64 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     width = round(img.shape[1] * scale)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
-    tform = _inverse_transform(scale_x=scale, scale_y=scale)   
+    tform = _inverse_transform(scale_x=scale, scale_y=scale)
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
 
 
-def _inverse_transform(scale_x: float = 1, skew_x: float = 0, offset_x: float = 0, scale_y: float = 1, skew_y: float = 0, offset_y: float = 0) -> np.ndarray:
+def shear(img: np.ndarray, shear_x: float = 3, shear_y: float = 0) -> np.ndarray:
+    """Shears the image in the specified dimension(s)
+
+    Args:
+        img: The image to shear.
+        shear_x: The amount to shear the image in the x axis
+        shear_y: The amount to shear the image in the y axis  
+
+    Returns:
+        A new ndarray containing the result of the shear
+    """
+    dest_shape = _calculate_shear_size(
+        img.shape[0], img.shape[1], shear_x, shear_y)
+    width = dest_shape[1]
+    height = dest_shape[0]
+
+    dest = np.zeros((height, width, 3), dtype=np.uint8)
+    tform = _inverse_transform(scale_x=0, shear_x=1, offset_x=2, shear_y=3, scale_y=4, offset_y=5)
+    print('tform')
+    print(tform)
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
+                             dest, dest.ctypes.shape, dest.ctypes.strides)
+    return dest
+
+
+def _calculate_shear_size(height, width, shear_x, shear_y):
+    p0 = np.array([0, 0])
+    p1 = np.array([0, width])
+    p2 = np.array([height, 0])
+    p3 = np.array([height, width])
+    shear = np.array([[1, shear_x],
+                      [shear_y, 1]])
+
+    p0 = shear @ p0
+    p1 = shear @ p1
+    p2 = shear @ p2
+    p3 = shear @ p3
+
+    print(p1)
+    print(p2)
+    width = p3[1] - p0[1]
+    height = p2[0] + p1[0]
+    print(width)
+    print(height)
+    return (round(height), round(width))
+
+
+def _inverse_transform(scale_x: float = 1, shear_x: float = 0, offset_x: float = 0, scale_y: float = 1, shear_y: float = 0, offset_y: float = 0) -> np.ndarray:
     """Generates an inverse transformation matrix with the given parameters.
     Inverse transformation matricies are used because the affine function does inverse mapping,
     that is calculating the source image pixel from on the destination image pixel. 
     """
-    return np.linalg.inv(np.array([[scale_x, skew_x, offset_x],
-                                   [skew_y, scale_y, offset_y],
+    return np.linalg.inv(np.array([[scale_x, shear_x, offset_x],
+                                   [shear_y, scale_y, offset_y],
                                    [0, 0, 1]], dtype=np.float32))

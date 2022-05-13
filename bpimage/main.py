@@ -6,16 +6,18 @@ import filters
 import transform
 
 # todo
-# deprecate PIL in io_utils?
-# affine bicubic
-# affine skew
-# affine calculate new image size
+# affine 
+#   shear negative factor
+#   rotate and calc new image size so no clipping. 
 
-# c verify walking through array in cache friendly manner
+# ig style filters? 
+
+# deprecate PIL in io_utils?
 
 # accept arguments for actions
 # sobel filter
-
+# requirements.txt
+# validate images passed in with decorator?
 # add setup.py for end users
 # handling keyboard interrupt in c?
 # add convovle error

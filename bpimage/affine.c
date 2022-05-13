@@ -6,11 +6,13 @@ const size_t PIXEL_SIZE = 3 * sizeof(unsigned char);
 
 void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides, float *inv_transform, unsigned char *dest, size_t *dest_shape, size_t *dest_strides)
 {
+    // cache the source image dimensions and strides
     size_t img_height = img_shape[0];
     size_t img_width = img_shape[1];
     size_t s0 = img_strides[0];
     size_t s1 = img_strides[1];
 
+    // cache the destination image dimensions and strides
     size_t dest_height = dest_shape[0];
     size_t dest_width = dest_shape[1];
     size_t ds0 = dest_strides[0];

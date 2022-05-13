@@ -24,20 +24,17 @@ def flipv(img: np.ndarray) -> np.ndarray:
         img: The image to flip.
 
     Returns:
-        A flipped view of the image
+        A new ndarray containing the result of the flip
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
-    tform = np.array([[-1,0,img.shape[1] - 1],
+    trans = np.array([[-1,0,img.shape[1] - 1],
                       [0,1,0],
                       [0,0,1]], dtype=np.float32)
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
-
-
-    return img[:, ::-1]
 
 
 def fliph(img: np.ndarray) -> np.ndarray:
@@ -47,9 +44,17 @@ def fliph(img: np.ndarray) -> np.ndarray:
         img: The image to flip.
 
     Returns:
-        A flipped view of the image
+        A new ndarray containing the result of the flip
     """
-    return img[::-1, :]
+    dest = np.zeros(img.shape, dtype=np.uint8)
+
+    trans = np.array([[1,0,0],
+                      [0,-1,img.shape[0] - 1],
+                      [0,0,1]], dtype=np.float32)
+
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
+                             dest, dest.ctypes.shape, dest.ctypes.strides)
+    return dest
 
 
 def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:

@@ -19,14 +19,14 @@ void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides
     size_t ds1 = dest_strides[1];
 
     // x and y scale
-    float a0 = inv_transform[0];
-    float a1 = inv_transform[1];
+    float sx = inv_transform[0];
+    float sy = inv_transform[4];
     // x and y shear
-    float b0 = inv_transform[3];
-    float b1 = inv_transform[4];
+    float shx = inv_transform[1];
+    float shy = inv_transform[3];
     // x and y offset
-    float c0 = inv_transform[2];
-    float c1 = inv_transform[5];
+    float tx = inv_transform[2];
+    float ty = inv_transform[5];
 
     size_t x1, y1, x, y;
 
@@ -37,8 +37,8 @@ void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides
         {
             // calculate the location of the source pixel by applying the inverse transformation matrix.
             // since x and y are integer types this will have the effect of simple rounding to the nearest neighbor.
-            x = x1 * a0 + y1 * b0 + c0;
-            y = x1 * a1 + y1 * b1 + c1;
+            x = x1 * sx + y1 * shx + tx;
+            y = x1 * shy + y1 * sy + ty;
 
             // skip any locations which fall outside of the source image. 
             if ((x < 0 || x >= img_width) || (y < 0 || y >= img_height))

@@ -57,19 +57,21 @@ def fliph(img: np.ndarray) -> np.ndarray:
     return dest
 
 
-def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
+def rotate90(img: np.ndarray, times: int = 4) -> np.ndarray:
     """Rotates the image counter-clockwise 90 degrees around the center.
 
     Args:
         img: The image to rotate. Negative values are ignored. 
+        times: a number representing the number of times that the image should be rotated 90 degrees.
 
     Returns:
-        A rotated view of the image
+        A new ndarray of the source image rotated 90 degree n times.
     """
     times = max(0, times) % 4
     # No need to do anything if the number of rotations brings us back to the original image.
     if times == 0:
-        return img[:]
+        # return copy because method specifies a new ndarray is returned.
+        return img.copy()
     # Handle 180 degree rotations
     if times == 2:
         return flipv(fliph(img))

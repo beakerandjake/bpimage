@@ -80,7 +80,7 @@ def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
     return np.transpose(flipv(img), axes=(1, 0, 2))
 
 
-def rotate(img: np.ndarray, angle: float = 180) -> np.ndarray:
+def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
     """Rotates the image counter-clockwise by a specified angle around the center
 
     Args:
@@ -101,7 +101,9 @@ def rotate(img: np.ndarray, angle: float = 180) -> np.ndarray:
     cos = math.cos(angle)
     sin = math.sin(angle)
 
-    # calculate an affine transformation that rotates from the center
+    # calculate an inverse affine transformation matrix that rotates from the center
+    # essentially, will move the center of the image to the origin coordinate, apply the roation
+    # and then move the image back to the original location.
     trans = np.array([[cos, sin,  cx * sin - cy * cos + cx],
                       [-sin,  cos, -cx * cos - cy * sin + cy],
                       [0, 0, 1]], dtype=np.float32)
@@ -111,22 +113,26 @@ def rotate(img: np.ndarray, angle: float = 180) -> np.ndarray:
     return dest
 
 
-def rescale(img: np.ndarray, scale: float = 1.25) -> np.ndarray:
+def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     if(scale <= 0):
         raise ValueError('Scale must be greater than zero')
 
+    # calculate the dimensions of the scaled image
     height = round(img.shape[0] * scale)
     width = round(img.shape[1] * scale)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
-    tform = _inverse_transform(scale_x=scale, scale_y=scale)
+    tform = _inverse_transform(scale_x=scale, scale_y=scale)   
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
 
 
 def _inverse_transform(scale_x: float = 1, skew_x: float = 0, offset_x: float = 0, scale_y: float = 1, skew_y: float = 0, offset_y: float = 0) -> np.ndarray:
-    """Generates an inverse transformation matrix with the given parameters."""
+    """Generates an inverse transformation matrix with the given parameters.
+    Inverse transformation matricies are used because the affine function does inverse mapping,
+    that is calculating the source image pixel from on the destination image pixel. 
+    """
     return np.linalg.inv(np.array([[scale_x, skew_x, offset_x],
                                    [skew_y, scale_y, offset_y],
                                    [0, 0, 1]], dtype=np.float32))

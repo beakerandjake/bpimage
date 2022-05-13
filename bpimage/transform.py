@@ -106,8 +106,8 @@ def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
     # calculate an inverse affine transformation matrix that rotates from the center
     # essentially, will move the center of the image to the origin coordinate, apply the roation
     # and then move the image back to the original location.
-    trans = np.array([[cos, sin,  cx * sin - cy * cos + cx],
-                      [-sin,  cos, -cx * cos - cy * sin + cy],
+    trans = np.array([[cos, -sin,  cx * sin - cy * cos + cx],
+                      [sin,  cos, -cx * cos - cy * sin + cy],
                       [0, 0, 1]], dtype=np.float32)
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
@@ -140,7 +140,7 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     return dest
 
 
-def shear(img: np.ndarray, shear_x: float = 3, shear_y: float = 0) -> np.ndarray:
+def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25) -> np.ndarray:
     """Shears the image in the specified dimension(s)
 
     Args:
@@ -151,40 +151,31 @@ def shear(img: np.ndarray, shear_x: float = 3, shear_y: float = 0) -> np.ndarray
     Returns:
         A new ndarray containing the result of the shear
     """
-    dest_shape = _calculate_shear_size(
-        img.shape[0], img.shape[1], shear_x, shear_y)
-    width = dest_shape[1]
-    height = dest_shape[0]
+    tform = _inverse_transform(shear_x=shear_x, shear_y=shear_y)
 
-    dest = np.zeros((height, width, 3), dtype=np.uint8)
-    tform = _inverse_transform(scale_x=0, shear_x=1, offset_x=2, shear_y=3, scale_y=4, offset_y=5)
-    print('tform')
-    print(tform)
+    dest_shape = _calc_new_img_size(img.shape, tform)
+    dest = np.zeros((dest_shape[0], dest_shape[1], 3), dtype=np.uint8)
+
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
 
 
-def _calculate_shear_size(height, width, shear_x, shear_y):
-    p0 = np.array([0, 0])
-    p1 = np.array([0, width])
-    p2 = np.array([height, 0])
-    p3 = np.array([height, width])
-    shear = np.array([[1, shear_x],
-                      [shear_y, 1]])
-
-    p0 = shear @ p0
-    p1 = shear @ p1
-    p2 = shear @ p2
-    p3 = shear @ p3
-
-    print(p1)
-    print(p2)
-    width = p3[1] - p0[1]
-    height = p2[0] + p1[0]
-    print(width)
-    print(height)
-    return (round(height), round(width))
+def _calc_new_img_size(src_shape, inv_transform):
+    # get the four corners of the image
+    bounds = np.array([[0, 0, 1],
+                       [0, src_shape[1], 1],
+                       [src_shape[0], 0, 1],
+                       [src_shape[0], src_shape[1], 1]])
+    # transformation matrix provided is for backwards mapping, but we need to forward map because
+    # we're calculating the dimensions of the destination image, so invert the inverse to get the original transform.
+    transform = np.linalg.inv(inv_transform)
+    # apply the transformation matrix to each point to get the extemities of the image.
+    result = bounds @ transform
+    # the final dimensions will be determined by range of the extremity points.
+    height = round(np.ptp(result[:, 0]))
+    width = round(np.ptp(result[:, 1]))
+    return (height, width)
 
 
 def _inverse_transform(scale_x: float = 1, shear_x: float = 0, offset_x: float = 0, scale_y: float = 1, shear_y: float = 0, offset_y: float = 0) -> np.ndarray:

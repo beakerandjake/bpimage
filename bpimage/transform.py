@@ -104,7 +104,7 @@ def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
     sin = math.sin(angle)
 
     # calculate an inverse affine transformation matrix that rotates from the center
-    # essentially, will move the center of the image to the origin coordinate, apply the roation
+    # essentially, will move the image so the center lies at the origin (0,0), apply the roation
     # and then move the image back to the original location.
     trans = np.array([[cos, -sin,  cx * sin - cy * cos + cx],
                       [sin,  cos, -cx * cos - cy * sin + cy],
@@ -140,7 +140,7 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     return dest
 
 
-def shear(img: np.ndarray, shear_x: float = 1, shear_y: float = -1) -> np.ndarray:
+def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25) -> np.ndarray:
     """Shears the image in the specified dimension(s)
 
     Args:

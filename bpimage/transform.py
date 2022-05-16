@@ -28,9 +28,9 @@ def flipv(img: np.ndarray) -> np.ndarray:
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
-    trans = np.array([[-1, 0, img.shape[1] - 1],
-                      [0, 1, 0],
-                      [0, 0, 1]], dtype=np.float32)
+    # matrix which flips the image across the y axis at the origin 
+    # and then slides it back "in frame"
+    trans = _inverse_transform(scale_x=-1, offset_x=img.shape[1]-1)
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
@@ -48,9 +48,9 @@ def fliph(img: np.ndarray) -> np.ndarray:
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
-    trans = np.array([[1, 0, 0],
-                      [0, -1, img.shape[0] - 1],
-                      [0, 0, 1]], dtype=np.float32)
+    # matrix which flips the image across the x axis at the origin 
+    # and then slides it back "in frame"
+    trans= _inverse_transform(scale_y=-1, offset_y=img.shape[0] - 1)
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)

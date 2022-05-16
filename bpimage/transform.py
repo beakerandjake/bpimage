@@ -140,7 +140,7 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     return dest
 
 
-def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25) -> np.ndarray:
+def shear(img: np.ndarray, shear_x: float = 1, shear_y: float = -1) -> np.ndarray:
     """Shears the image in the specified dimension(s)
 
     Args:
@@ -151,10 +151,19 @@ def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25) -> np.nda
     Returns:
         A new ndarray containing the result of the shear
     """
+    # start with a basic shear matrix
     tform = _inverse_transform(shear_x=shear_x, shear_y=shear_y)
 
-    dest_shape = _calc_new_img_size(img.shape, tform)
-    dest = np.zeros((dest_shape[0], dest_shape[1], 3), dtype=np.uint8)
+    # calculate the new dimensions of the image based after the shear is applied
+    height, width = _calc_new_img_size(img.shape, tform)
+    dest = np.zeros((height, width, 3), dtype=np.uint8)
+
+    # if applying a negative shear factor then we need to apply an
+    # offset to the images final position so it remains "in frame"
+    if shear_x < 0:
+        tform = tform @ _inverse_transform(offset_x=abs(width - img.shape[1]))
+    if shear_y < 0:
+        tform = tform @ _inverse_transform(offset_y=abs(height - img.shape[0]))
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)

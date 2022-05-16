@@ -92,23 +92,34 @@ def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
     Returns:
         A new ndarray containing the result of the rotate
     """
-    dest = np.zeros(img.shape, dtype=np.uint8)
+    # convert angle to radians and precalculate values
+    rads = math.radians(angle)
+    cos = math.cos(rads)
+    sin = math.sin(rads)
 
-    # get center coordinates of image so we can roate around it
-    cx = img.shape[1] // 2
-    cy = img.shape[0] // 2
+    # generate a rotation matrix for the specified radians
+    rot = np.array([[cos, -sin, 0],
+                    [sin, cos, 0],
+                    [0, 0, 1]], dtype=np.float32)
 
-    # convert angle to rads and precalculate values
-    angle = math.radians(angle)
-    cos = math.cos(angle)
-    sin = math.sin(angle)
+    # matrix to translate the image so the center moves to the (0,0) origin point.
+    center = np.array([[1, 0, img.shape[1] // 2],
+                       [0, 1, img.shape[0] // 2],
+                       [0, 0, 1]], dtype=np.float32)
 
-    # calculate an inverse affine transformation matrix that rotates from the center
-    # essentially, will move the image so the center lies at the origin (0,0), apply the roation
-    # and then move the image back to the original location.
-    trans = np.array([[cos, -sin,  cx * sin - cy * cos + cx],
-                      [sin,  cos, -cx * cos - cy * sin + cy],
-                      [0, 0, 1]], dtype=np.float32)
+    # calculate the size destination image based on the rotation
+    height, width = _calc_new_img_size(img.shape, rot)
+    dest = np.zeros((height, width, 3), dtype=np.uint8)
+
+    # matrix to move the center of the image from the origin to the center of the destination image.
+    back = np.array([[1, 0, -width//2],
+                     [0, 1, -height//2],
+                     [0, 0, 1]], dtype=np.float32)
+
+    # generate the final transformation matrix which moves the center of the image to 0,0, rotates
+    # then moves the center of the image to the center of the destination image which has been resized
+    # to accomodate the new image size due to rotation.
+    trans = center @ rot @ back
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
@@ -184,6 +195,7 @@ def _calc_new_img_size(src_shape, inv_transform):
     # the final dimensions will be determined by range of the extremity points.
     height = round(np.ptp(result[:, 0]))
     width = round(np.ptp(result[:, 1]))
+
     return (height, width)
 
 

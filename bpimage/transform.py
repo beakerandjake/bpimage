@@ -28,7 +28,7 @@ def flipv(img: np.ndarray) -> np.ndarray:
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
-    # matrix which flips the image across the y axis at the origin 
+    # matrix which flips the image across the y axis at the origin
     # and then slides it back "in frame"
     trans = _inverse_transform(scale_x=-1, offset_x=img.shape[1]-1)
 
@@ -48,9 +48,9 @@ def fliph(img: np.ndarray) -> np.ndarray:
     """
     dest = np.zeros(img.shape, dtype=np.uint8)
 
-    # matrix which flips the image across the x axis at the origin 
+    # matrix which flips the image across the x axis at the origin
     # and then slides it back "in frame"
-    trans= _inverse_transform(scale_y=-1, offset_y=img.shape[0] - 1)
+    trans = _inverse_transform(scale_y=-1, offset_y=img.shape[0] - 1)
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
@@ -82,12 +82,13 @@ def rotate90(img: np.ndarray, times: int = 4) -> np.ndarray:
     return np.transpose(flipv(img), axes=(1, 0, 2))
 
 
-def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
+def rotate(img: np.ndarray, angle: float = 45, expand=True) -> np.ndarray:
     """Rotates the image counter-clockwise by a specified angle around the center
 
     Args:
         img: The image to rotate.
         angle: The amount to rotate in degrees. 
+        expand: If true, expands the dimensions of resulting image so it's large enough to hold the entire rotated image. 
 
     Returns:
         A new ndarray containing the result of the rotate
@@ -108,7 +109,7 @@ def rotate(img: np.ndarray, angle: float = 45) -> np.ndarray:
                        [0, 0, 1]], dtype=np.float32)
 
     # calculate the size destination image based on the rotation
-    height, width = _calc_new_img_size(img.shape, rot)
+    height, width = img.shape[:2] if expand == False else _calc_new_img_size(img.shape, rot)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
     # matrix to move the center of the image from the origin to the center of the destination image.
@@ -152,13 +153,14 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     return dest
 
 
-def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25) -> np.ndarray:
+def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25, expand=True) -> np.ndarray:
     """Shears the image in the specified dimension(s)
 
     Args:
         img: The image to shear.
         shear_x: The amount to shear the image in the x axis
-        shear_y: The amount to shear the image in the y axis  
+        shear_y: The amount to shear the image in the y axis
+        expand: If true, expands the dimensions of resulting image so it's large enough to hold the entire skewed image. 
 
     Returns:
         A new ndarray containing the result of the shear
@@ -167,14 +169,14 @@ def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25) -> np.nda
     tform = _inverse_transform(shear_x=shear_x, shear_y=shear_y)
 
     # calculate the new dimensions of the image based after the shear is applied
-    height, width = _calc_new_img_size(img.shape, tform)
+    height, width = img.shape[:2] if expand == False else _calc_new_img_size(img.shape, tform)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
     # if applying a negative shear factor then we need to apply an
     # offset to the images final position so it remains "in frame"
-    if shear_x < 0:
+    if shear_x < 0 and expand == True:
         tform = tform @ _inverse_transform(offset_x=abs(width - img.shape[1]))
-    if shear_y < 0:
+    if shear_y < 0 and expand == True:
         tform = tform @ _inverse_transform(offset_y=abs(height - img.shape[0]))
 
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,

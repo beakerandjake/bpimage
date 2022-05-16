@@ -6,21 +6,18 @@ import filters
 import transform
 
 # todo
-# affine 
-#   shear negative factor
-#   rotate and calc new image size so no clipping. 
-
+# decorator to validate img input
+# deprecate PIL in io_utils?
+# accept arguments for actions
 # ig style filters? 
 
-# deprecate PIL in io_utils?
 
-# accept arguments for actions
 # sobel filter
 # requirements.txt
-# validate images passed in with decorator?
 # add setup.py for end users
 # handling keyboard interrupt in c?
-# add convovle error
+# compiling library/make file? 
+# add convovle error / affine error
 
 
 # transform rotate / shear / resize / thumbnail, tint, black and white, color filters

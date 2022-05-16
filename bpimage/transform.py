@@ -140,12 +140,13 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     if(scale <= 0):
         raise ValueError('Scale must be greater than zero')
 
-    # calculate the dimensions of the scaled image
-    height = round(img.shape[0] * scale)
-    width = round(img.shape[1] * scale)
+    # matrix to scale the image uniformly in the x and y dimension
+    tform = _inverse_transform(scale_x=scale, scale_y=scale)
+
+    # calculate the dimensions of the image after scaling is applied
+    height, width = _calc_new_img_size(img.shape, tform)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
-    tform = _inverse_transform(scale_x=scale, scale_y=scale)
     bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
@@ -181,7 +182,16 @@ def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25) -> np.nda
     return dest
 
 
-def _calc_new_img_size(src_shape, inv_transform):
+def _calc_new_img_size(src_shape: tuple[int, int], inv_transform: np.ndarray) -> tuple[int, int]:
+    """Determines the size of the image after the transform is applied to it.
+
+    Args:
+        src_shape: A tuple containing the source images height and width respectively. 
+        inv_transform: The inverse transformation matrix that will be applied to the image.  
+
+    Returns:
+        A tuple containing the destination images height and width respectively.
+    """
     # get the four corners of the image
     bounds = np.array([[0, 0, 1],
                        [0, src_shape[1], 1],
@@ -193,10 +203,7 @@ def _calc_new_img_size(src_shape, inv_transform):
     # apply the transformation matrix to each point to get the extemities of the image.
     result = bounds @ transform
     # the final dimensions will be determined by range of the extremity points.
-    height = round(np.ptp(result[:, 0]))
-    width = round(np.ptp(result[:, 1]))
-
-    return (height, width)
+    return (round(np.ptp(result[:, 0])), round(np.ptp(result[:, 1])))
 
 
 def _inverse_transform(scale_x: float = 1, shear_x: float = 0, offset_x: float = 0, scale_y: float = 1, shear_y: float = 0, offset_y: float = 0) -> np.ndarray:

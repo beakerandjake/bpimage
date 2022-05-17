@@ -20,7 +20,7 @@ import transform
 # add convovle error / affine error
 
 
-# transform rotate / shear / resize / thumbnail, tint, black and white, color filters
+# black and white, color filters
 
 ACTIONS = {
     'boxblur': filters.boxblur,

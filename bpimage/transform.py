@@ -30,9 +30,9 @@ def flipv(img: np.ndarray) -> np.ndarray:
 
     # matrix which flips the image across the y axis at the origin
     # and then slides it back "in frame"
-    trans = _inverse_transform(scale_x=-1, offset_x=img.shape[1]-1)
+    tform = _inverse_transform(scale_x=-1, offset_x=img.shape[1]-1)
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
 
@@ -50,9 +50,9 @@ def fliph(img: np.ndarray) -> np.ndarray:
 
     # matrix which flips the image across the x axis at the origin
     # and then slides it back "in frame"
-    trans = _inverse_transform(scale_y=-1, offset_y=img.shape[0] - 1)
+    tform = _inverse_transform(scale_y=-1, offset_y=img.shape[0] - 1)
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
 
@@ -120,9 +120,9 @@ def rotate(img: np.ndarray, angle: float = 45, expand=True) -> np.ndarray:
     # generate the final transformation matrix which moves the center of the image to 0,0, rotates
     # then moves the center of the image to the center of the destination image which has been resized
     # to accomodate the new image size due to rotation.
-    trans = center @ rot @ back
+    tform = center @ rot @ back
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, trans,
+    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest
 

@@ -3,6 +3,7 @@
 import ctypes
 import math
 import numpy as np
+from validate import ensure_8bit_rbg
 
 # load the affine function written in c and configure so we can invoke it.
 bp_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
@@ -32,9 +33,7 @@ def flipv(img: np.ndarray) -> np.ndarray:
     # and then slides it back "in frame"
     tform = _inverse_transform(scale_x=-1, offset_x=img.shape[1]-1)
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
-                             dest, dest.ctypes.shape, dest.ctypes.strides)
-    return dest
+    return _affine_transformation(img, tform, dest)
 
 
 def fliph(img: np.ndarray) -> np.ndarray:
@@ -52,9 +51,7 @@ def fliph(img: np.ndarray) -> np.ndarray:
     # and then slides it back "in frame"
     tform = _inverse_transform(scale_y=-1, offset_y=img.shape[0] - 1)
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
-                             dest, dest.ctypes.shape, dest.ctypes.strides)
-    return dest
+    return _affine_transformation(img, tform, dest)
 
 
 def rotate90(img: np.ndarray, times: int = 4) -> np.ndarray:
@@ -109,7 +106,8 @@ def rotate(img: np.ndarray, angle: float = 45, expand=True) -> np.ndarray:
                        [0, 0, 1]], dtype=np.float32)
 
     # calculate the size destination image based on the rotation
-    height, width = img.shape[:2] if expand == False else _calc_new_img_size(img.shape, rot)
+    height, width = img.shape[:2] if expand == False else _calc_new_img_size(
+        img.shape, rot)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
     # matrix to move the center of the image from the origin to the center of the destination image.
@@ -122,9 +120,7 @@ def rotate(img: np.ndarray, angle: float = 45, expand=True) -> np.ndarray:
     # to accomodate the new image size due to rotation.
     tform = center @ rot @ back
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
-                             dest, dest.ctypes.shape, dest.ctypes.strides)
-    return dest
+    return _affine_transformation(img, tform, dest)
 
 
 def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
@@ -148,9 +144,7 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     height, width = _calc_new_img_size(img.shape, tform)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
-                             dest, dest.ctypes.shape, dest.ctypes.strides)
-    return dest
+    return _affine_transformation(img, tform, dest)
 
 
 def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25, expand=True) -> np.ndarray:
@@ -169,7 +163,8 @@ def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25, expand=Tr
     tform = _inverse_transform(shear_x=shear_x, shear_y=shear_y)
 
     # calculate the new dimensions of the image based after the shear is applied
-    height, width = img.shape[:2] if expand == False else _calc_new_img_size(img.shape, tform)
+    height, width = img.shape[:2] if expand == False else _calc_new_img_size(
+        img.shape, tform)
     dest = np.zeros((height, width, 3), dtype=np.uint8)
 
     # if applying a negative shear factor then we need to apply an
@@ -179,9 +174,7 @@ def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25, expand=Tr
     if shear_y < 0 and expand == True:
         tform = tform @ _inverse_transform(offset_y=abs(height - img.shape[0]))
 
-    bp_clib.affine_transform(img, img.ctypes.shape, img.ctypes.strides, tform,
-                             dest, dest.ctypes.shape, dest.ctypes.strides)
-    return dest
+    return _affine_transformation(img, tform, dest)
 
 
 def _calc_new_img_size(src_shape: tuple[int, int], inv_transform: np.ndarray) -> tuple[int, int]:
@@ -216,3 +209,12 @@ def _inverse_transform(scale_x: float = 1, shear_x: float = 0, offset_x: float =
     return np.linalg.inv(np.array([[scale_x, shear_x, offset_x],
                                    [shear_y, scale_y, offset_y],
                                    [0, 0, 1]], dtype=np.float32))
+
+
+def _affine_transformation(src: np.ndarray, inv_transform: np.ndarray, dest: np.ndarray):
+    """Applies the affine transformation to the source and writes the result to the destination
+    """
+    ensure_8bit_rbg(src, dest)
+    bp_clib.affine_transform(src, src.ctypes.shape, src.ctypes.strides, inv_transform,
+                             dest, dest.ctypes.shape, dest.ctypes.strides)
+    return dest

@@ -1,7 +1,8 @@
-"""Functions for filtering images by appling kernels to each pixel using convolution"""
-
+"""Functions for filtering images by appling kernels to each pixel using convolution
+"""
 import ctypes
 import numpy as np
+from validate import ensure_8bit_rbg
 
 # load the convovle function written in c and configure so we can invoke it.
 _convolve_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
@@ -145,8 +146,7 @@ def smooth(img: np.ndarray) -> np.ndarray:
 def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     """Applies the kernel to the image, delegating the convolve to the c library.
     """
-    if img.ndim != 3 or img.shape[-1] != 3 or img.dtype != np.uint8:
-        raise ValueError('Image must be RGB (0-255).')
+    ensure_8bit_rbg(img)
     if kern.dtype != np.float32 or kern.ndim != 2 or kern.shape[0] != kern.shape[1] or kern.shape[0] % 2 == 0 or kern.shape[0] <= 1:
         raise ValueError(
             'Kernel must be a NxN square of floats where N is an odd number greater than one.')

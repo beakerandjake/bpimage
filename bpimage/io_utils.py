@@ -4,9 +4,9 @@ can be switched out with ease. Provides standardized exceptions which simplify e
 """
 import numpy as np
 from PIL import Image, ImageShow, UnidentifiedImageError
-# import matplotlib.pyplot as plt
 
-def open(path:str) -> np.ndarray:
+
+def open(path: str) -> np.ndarray:
     """Attempts to load an image file as RGB and returns an ndarray
 
     Args:
@@ -22,17 +22,22 @@ def open(path:str) -> np.ndarray:
         with Image.open(path) as img:
             if img.mode != "RGB":
                 img = img.convert("RGB")
-            return np.array(img, dtype=np.uint8)
-    except IsADirectoryError as e: 
-        raise ImageOpenError(f'Cannot open \'{path}\': Expected image but provided directory') from e
+            return np.asarray(img, dtype=np.uint8)
+    except IsADirectoryError as e:
+        raise ImageOpenError(
+            f'Cannot open \'{path}\': Expected image but provided directory') from e
     except FileNotFoundError as e:
-        raise ImageOpenError(f'Cannot open \'{path}\': No such file or directory') from e
+        raise ImageOpenError(
+            f'Cannot open \'{path}\': No such file or directory') from e
     except UnidentifiedImageError as e:
-        raise ImageOpenError(f'Cannot open \'{path}\': Failed to open image, is this a valid image file?') from e
+        raise ImageOpenError(
+            f'Cannot open \'{path}\': Failed to open image, is this a valid image file?') from e
     except Exception as e:
-        raise ImageOpenError(f'Unexpected error opening \'{path}\': {str(e)}') from e
+        raise ImageOpenError(
+            f'Unexpected error opening \'{path}\': {str(e)}') from e
 
-def save(img:np.ndarray, path:str):
+
+def save(img: np.ndarray, path: str):
     """Attempts to save an ndarray of image data as an image with the given file name. 
 
     Args:
@@ -48,9 +53,11 @@ def save(img:np.ndarray, path:str):
     try:
         Image.fromarray(img).save(path)
     except ValueError as e:
-        raise ImageSaveError(f'Cannot save \'{path}\': could not determine output image format') from e
+        raise ImageSaveError(
+            f'Cannot save \'{path}\': could not determine output image format') from e
     except OSError as e:
         raise ImageSaveError(f'Failed to save \'{path}\': {e.strerror}') from e
+
 
 def show(img):
     """Attempts to save an ndarray of image data as an image with the given file name. 
@@ -66,25 +73,22 @@ def show(img):
         ImageSaveError: Raised when something goes wrong saving the image 
     """
     try:
-        # _, ax = plt.subplots(1,2)
-        # ax[0].imshow(img[1])
-        # ax[1].imshow(img[0])
-        # plt.show()
-
-
         if not ImageShow.show(Image.fromarray(img)):
             raise ImageShowError("Failed to show image")
     except Exception as e:
-        raise ImageShowError(f"Unexpected error showing image: {str(e)}") from e
+        raise ImageShowError(
+            f"Unexpected error showing image: {str(e)}") from e
 
 
 class ImageOpenError(Exception):
     """Raised when something went wrong opening an image file"""
     pass
 
+
 class ImageSaveError(Exception):
     """Raised when something went wrong saving an image file"""
     pass
+
 
 class ImageShowError(Exception):
     """Raised when something went wrong displaying an image file"""

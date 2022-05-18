@@ -4,15 +4,13 @@ from argparse import ArgumentParser
 import io_utils
 import filters
 import transform
+import color
 
 # todo
-# decorator to validate img input
-# deprecate PIL in io_utils?
 # accept arguments for actions
 # ig style filters? 
 
 
-# sobel filter
 # requirements.txt
 # add setup.py for end users
 # handling keyboard interrupt in c?
@@ -35,7 +33,10 @@ ACTIONS = {
     'rotate90': transform.rotate90,
     'rotate': transform.rotate,
     'rescale': transform.rescale,
-    'shear': transform.shear
+    'shear': transform.shear,
+    'rgb2gray': color.rgb2grayscale,
+    'gray2rgb': color.grayscale2rgb,
+    'sepia': color.sepia
 }
 
 

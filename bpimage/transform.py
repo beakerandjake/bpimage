@@ -1,4 +1,4 @@
-"""Function for appling transformations to the image such as rotation and scaling.
+"""Functions for appling transformations to the image such as rotation and scaling.
 """
 import ctypes
 import math

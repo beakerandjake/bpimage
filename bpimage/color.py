@@ -1,6 +1,7 @@
 
 """Functions for modifying the colors of images.
 """
+from asyncio.constants import DEBUG_STACK_DEPTH
 import numpy as np
 
 
@@ -39,4 +40,11 @@ def grayscale2rgb(img: np.ndarray) -> np.ndarray:
 
 
 def sepia(img: np.ndarray) -> np.ndarray:
-    return img
+    transform = np.array([[.393,.769,.189],
+                          [.349,.686,.168],
+                          [.272,.534,.131]])
+
+    dest = (img @ transform.T)
+    dest[np.where(dest>255)] = 255
+
+    return dest.astype(np.uint8)

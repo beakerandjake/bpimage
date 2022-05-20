@@ -50,12 +50,32 @@ def sepia(img: np.ndarray) -> np.ndarray:
         A new ndarray of dtype uint8 with shape (h,w,3) containing the sepia toned image
     """
     # using common weights defined at https://stackoverflow.com/questions/36434905
-    transform = np.array([[.393,.769,.189],
-                          [.349,.686,.168],
-                          [.272,.534,.131]])
+    transform = np.array([[.393, .769, .189],
+                          [.349, .686, .168],
+                          [.272, .534, .131]])
     # clamp the values at 255 to ensure there isnt any overflow when casting back to uint8
-    return (img @ transform.T).clip(0,255).astype(np.uint8)
+    return (img @ transform.T).clip(0, 255).astype(np.uint8)
 
-def brighten(img: np.ndarray, strength: int = -25) -> np.ndarray:
-    dest = img.astype(np.int32)
-    return (dest + strength).clip(0,255).astype(np.uint8)
+
+def brighten(img: np.ndarray, strength: float = 8) -> np.ndarray:
+    """Modifies the brightness of the image. 
+
+    Args:
+        img: The source 8bit RGB image with shape (h,w,3) 
+        strength: The amount to brighten or darken the image.
+            A value of 0.0 will result in a black image, 1.0 gives the original image.
+
+    Returns:
+        A new ndarray of dtype uint8 with shape (h,w,3) containing the sepia toned image
+    """
+    # dest = img.astype(np.int32)
+    # return (dest + strength).clip(0,255).astype(np.uint8)
+
+    # from PIL import Image, ImageEnhance
+
+    # im = Image.fromarray(img)
+    # z = ImageEnhance.Brightness(im)
+    # return np.asarray(z.enhance(strength), dtype=np.uint8)
+
+    dest = img.astype(np.float32)
+    return (dest * max(0, strength)).clip(0, 255).astype(np.uint8)

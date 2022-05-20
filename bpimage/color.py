@@ -24,7 +24,7 @@ def rgb2grayscale(img: np.ndarray) -> np.ndarray:
 
 def grayscale2rgb(img: np.ndarray) -> np.ndarray:
     """Converts an image in grayscale format to RGB format.
-    Each single 8bit pixel of the image is expanded int RGB channels. 
+    Each single 8bit pixel of the image is expanded into RGB channels. 
     The shape of the image will be modified from (h,w) to (h,w,3).
 
     Args:
@@ -40,11 +40,16 @@ def grayscale2rgb(img: np.ndarray) -> np.ndarray:
 
 
 def sepia(img: np.ndarray) -> np.ndarray:
+    """Applies a sepia tone to an RGB image  
+
+    Args:
+        img: The source image image with shape (h,w,3) 
+
+    Returns:
+        A new ndarray of dtype uint8 with shape (h,w,3) containing the sepia toned image
+    """
     transform = np.array([[.393,.769,.189],
                           [.349,.686,.168],
                           [.272,.534,.131]])
-
-    dest = (img @ transform.T)
-    dest[np.where(dest>255)] = 255
-
-    return dest.astype(np.uint8)
+    # clamp the values at 255 to ensure there isnt any overflow when casting back to uint8
+    return (img @ transform.T).clip(0,255).astype(np.uint8)

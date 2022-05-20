@@ -2,7 +2,6 @@
 """
 import ctypes
 import numpy as np
-from validate import ensure_8bit_rbg
 
 # load the convovle function written in c and configure so we can invoke it.
 _convolve_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
@@ -143,10 +142,12 @@ def smooth(img: np.ndarray) -> np.ndarray:
                      [1, 1,  1, 1, 1]], dtype=np.float32) / 100
     return _convolve(img, kern)
 
+
 def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     """Applies the kernel to the image, delegating the convolve to the c library.
     """
-    ensure_8bit_rbg(img)
+    if img.shape[-1] != 3:
+        raise ValueError('Expected RGB Image array of shape (h,w,3).')
     if kern.dtype != np.float32 or kern.ndim != 2 or kern.shape[0] != kern.shape[1] or kern.shape[0] % 2 == 0 or kern.shape[0] <= 1:
         raise ValueError(
             'Kernel must be a NxN square of floats where N is an odd number greater than one.')
@@ -156,9 +157,13 @@ def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     # pad source image for easy bounds handling at the expense of memory
     # also ensures the new array will also be laid out in memory how the convolve method expects
     krad = kern.shape[0] // 2
-    img_padded = np.ascontiguousarray(np.pad(img, ((krad, krad), (krad, krad), (0, 0)), 'edge'))
+    img_padded = np.ascontiguousarray(
+        np.pad(img, ((krad, krad), (krad, krad), (0, 0)), 'edge'))
 
+    # even though we padded the image for the convolve, the destination image will have the same shape as the unpadded source.
     dest = np.empty(img.shape, dtype=np.uint8)
+
+    # invoke our c function to apply the convolution.
     _convolve_clib.convolve(img_padded, kern, dest, bias,
                             img.ctypes.shape, kern.ctypes.shape)
     return dest

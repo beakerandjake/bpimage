@@ -3,7 +3,6 @@
 import ctypes
 import math
 import numpy as np
-from validate import ensure_8bit_rbg
 
 # load the affine function written in c and configure so we can invoke it.
 bp_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
@@ -212,9 +211,11 @@ def _inverse_transform(scale_x: float = 1, shear_x: float = 0, offset_x: float =
 
 
 def _affine_transformation(src: np.ndarray, inv_transform: np.ndarray, dest: np.ndarray):
-    """Applies the affine transformation to the source and writes the result to the destination
+    """Applies the affine transformation to the source and writes the result to the destination.
     """
-    ensure_8bit_rbg(src, dest)
+    if src.shape[-1] != 3 or dest.shape[-1] != 3:
+        raise ValueError('Expected RGB Image array of shape (h,w,3).')
+
     bp_clib.affine_transform(src, src.ctypes.shape, src.ctypes.strides, inv_transform,
                              dest, dest.ctypes.shape, dest.ctypes.strides)
     return dest

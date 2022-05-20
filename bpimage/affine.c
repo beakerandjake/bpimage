@@ -4,6 +4,21 @@
 // The memory size of a single RGB pixel (composed of 3 unsigned chars for RGB)
 const size_t PIXEL_SIZE = 3 * sizeof(unsigned char);
 
+/*
+Applies a convolution kernel to the image and writes the result to the destination image.
+
+@param img_padded: A version of the source image padded on all sides by the kernel.
+    Expected to have shape of (img height + kern height -1, img width + kern width - 1, 3).
+    Expected to be in contigious row major layout.
+@param kern: The convolution kernel to apply to the image.
+    Expected to be a contigious 2 dimensional array in row major order with shape (N,N) where N is an odd number > 1
+@param dest: The destination image to write the results to.
+    Expected to have the same shape as the original unpadded image. (img height, img width, 3)
+    Expected to be in contigious row major layout.
+@param bias: A constant value that is added to the result for each pixel after convolution is calculated.
+@param dest_shape: The shape of the image in format (height, width)
+@param kern_shape: The shape of the kernel in format (height, width)
+*/
 void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides, float *inv_transform, unsigned char *dest, size_t *dest_shape, size_t *dest_strides)
 {
     // cache the source image dimensions and strides
@@ -40,7 +55,7 @@ void affine_transform(unsigned char *img, size_t *img_shape, size_t *img_strides
             x = x1 * sx + y1 * shx + tx;
             y = x1 * shy + y1 * sy + ty;
 
-            // skip any locations which fall outside of the source image. 
+            // skip any locations which fall outside of the source image.
             if ((x < 0 || x >= img_width) || (y < 0 || y >= img_height))
             {
                 continue;

@@ -9,6 +9,8 @@ import color
 # todo
 # accept arguments for actions
 # ig style filters? 
+# clib in one c file? 
+# wrap all c functions in one py file for easier access? 
 
 
 # requirements.txt

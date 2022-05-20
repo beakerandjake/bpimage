@@ -1,11 +1,7 @@
 #include <stdio.h>
+#include "common.h"
 
 #define COLOR_DEPTH 3
-
-/*
-Clamps a float value to be between the min and max of an unsigned char
- */
-float clamp(float value);
 
 /*
 Applies a convolution kernel to the image and writes the result to the destination image.
@@ -72,10 +68,4 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
             dest[++pixel_offset] = clamp(b + bias);
         }
     }
-}
-
-float clamp(float value)
-{
-    const float ret = value < 0 ? 0 : value;
-    return ret > 255 ? 255 : ret;
 }

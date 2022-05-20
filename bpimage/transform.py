@@ -53,7 +53,7 @@ def fliph(img: np.ndarray) -> np.ndarray:
     return _affine_transformation(img, tform, dest)
 
 
-def rotate90(img: np.ndarray, times: int = 4) -> np.ndarray:
+def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
     """Rotates the image counter-clockwise 90 degrees around the center.
 
     Args:

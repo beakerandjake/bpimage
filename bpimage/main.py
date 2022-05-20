@@ -36,7 +36,8 @@ ACTIONS = {
     'shear': transform.shear,
     'rgb2gray': color.rgb2grayscale,
     'gray2rgb': color.grayscale2rgb,
-    'sepia': color.sepia
+    'sepia': color.sepia,
+    'brighten': color.brighten
 }
 
 

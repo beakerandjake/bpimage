@@ -19,6 +19,7 @@ def rgb2grayscale(img: np.ndarray) -> np.ndarray:
     if img.ndim != 3 and img.shape[-1] != 3:
         return ValueError("Image must be RGB.")
 
+    # using weighted averages defined in https://en.wikipedia.org/wiki/Grayscale#Converting_colour_to_grayscale
     return (img @ np.array([.2126, .7152, .0722])).astype(np.uint8)
 
 
@@ -35,7 +36,7 @@ def grayscale2rgb(img: np.ndarray) -> np.ndarray:
     """
     if img.ndim != 2:
         return ValueError("Image must be grayscale.")
-
+    # expand 2d array to 3d and fill the RGB values with the grayscale pixel value.
     return img[:, :, np.newaxis].repeat(3, axis=-1)
 
 
@@ -48,8 +49,13 @@ def sepia(img: np.ndarray) -> np.ndarray:
     Returns:
         A new ndarray of dtype uint8 with shape (h,w,3) containing the sepia toned image
     """
+    # using common weights defined at https://stackoverflow.com/questions/36434905
     transform = np.array([[.393,.769,.189],
                           [.349,.686,.168],
                           [.272,.534,.131]])
     # clamp the values at 255 to ensure there isnt any overflow when casting back to uint8
     return (img @ transform.T).clip(0,255).astype(np.uint8)
+
+def brighten(img: np.ndarray, strength: int = -25) -> np.ndarray:
+    dest = img.astype(np.int32)
+    return (dest + strength).clip(0,255).astype(np.uint8)

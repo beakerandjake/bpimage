@@ -14,8 +14,6 @@ def ensure_8bit_rbg(*args: np.ndarray):
         ValueError: An ndarray failed to validate.
     """
     for img in args:
-        if img.flags.c_contiguous == False:
-            raise ValueError("Image array must have a C Contiguous memory layout.")
         if img.ndim != 3:
             raise ValueError("Image array must have exactly three dimensions.")
         if img.dtype != np.uint8:

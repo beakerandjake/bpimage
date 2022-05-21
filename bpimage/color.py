@@ -1,7 +1,6 @@
 
 """Functions for modifying the colors of images.
 """
-
 import numpy as np
 
 

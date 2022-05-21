@@ -1,17 +1,8 @@
 
 """Functions for modifying the colors of images.
 """
-import ctypes
-import numpy as np
 
-# load the affine function written in c and configure so we can invoke it.
-bp_clib = ctypes.cdll.LoadLibrary('./bpimage.so')
-bp_clib.brighten.restype = None
-bp_clib.brighten.argtypes = [np.ctypeslib.ndpointer(np.uint8, ndim=3),
-                             ctypes.POINTER(np.ctypeslib.c_intp),
-                             ctypes.POINTER(np.ctypeslib.c_intp),
-                             ctypes.c_float,
-                             np.ctypeslib.ndpointer(np.uint8, ndim=3)]
+import numpy as np
 
 
 def rgb2grayscale(img: np.ndarray) -> np.ndarray:
@@ -65,10 +56,10 @@ def sepia(img: np.ndarray) -> np.ndarray:
                           [.272, .534, .131]])
 
     # clamp the values at 255 to ensure there isnt any overflow when casting back to uint8
-    return (img @ transform.T).clip(0, 255).astype(np.uint8)
+    return np.clip(img @ transform.T, 0, 255).astype(np.uint8)
 
 
-def brighten(img: np.ndarray, strength: float = .1) -> np.ndarray:
+def brighten(img: np.ndarray, strength: float = 500) -> np.ndarray:
     """Modifies the brightness of the image. 
 
     Args:
@@ -79,22 +70,7 @@ def brighten(img: np.ndarray, strength: float = .1) -> np.ndarray:
     Returns:
         A new ndarray of dtype uint8 with shape (h,w,3) containing the sepia toned image
     """
-    # dest = img.astype(np.int32)
-    # return (dest + strength).clip(0,255).astype(np.uint8)
-
-    from PIL import Image, ImageEnhance
-
-    im = Image.fromarray(img)
-    z = ImageEnhance.Brightness(im)
-    pil =  np.asarray(z.enhance(strength), dtype=np.uint8)
-
-    dest = np.zeros_like(img)
-    bp_clib.brighten(img, img.ctypes.shape, img.ctypes.strides, strength, dest)
-
-    print("equal?", np.array_equal(pil, dest))
-
-    return dest
-
-    
-    # dest = img.astype(np.float32)
-    # return (dest * max(0, strength)).clip(0, 255).astype(np.uint8)
+    # Since we're multiplying by a scale it's going to be likely that the uint8 values will overflow.
+    # To get around this. upcast the image to a data type which will likely store the results of the operation.
+    # Then clip back to uint8 range.
+    return np.clip(img.astype(np.float32) * strength, 0, 255).astype(np.uint8)

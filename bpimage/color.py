@@ -54,11 +54,11 @@ def sepia(img: np.ndarray) -> np.ndarray:
                           [.349, .686, .168],
                           [.272, .534, .131]])
 
-    # clamp the values at 255 to ensure there isnt any overflow when casting back to uint8
+    # clamp the values to ensure there isnt any overflow when casting from float back to uint8
     return np.clip(img @ transform.T, 0, 255).astype(np.uint8)
 
 
-def brighten(img: np.ndarray, strength: float = 500) -> np.ndarray:
+def brighten(img: np.ndarray, strength: float = 500.0) -> np.ndarray:
     """Modifies the brightness of the image. 
 
     Args:
@@ -70,6 +70,5 @@ def brighten(img: np.ndarray, strength: float = 500) -> np.ndarray:
         A new ndarray of dtype uint8 with shape (h,w,3) containing the sepia toned image
     """
     # Since we're multiplying by a scale it's going to be likely that the uint8 values will overflow.
-    # To get around this. upcast the image to a data type which will likely store the results of the operation.
-    # Then clip back to uint8 range.
+    # To get around this upcast the image to a larger data type, then clip back to uint8 range.
     return np.clip(img.astype(np.float32) * strength, 0, 255).astype(np.uint8)

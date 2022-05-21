@@ -72,3 +72,18 @@ def brighten(img: np.ndarray, strength: float = 500.0) -> np.ndarray:
     # Since we're multiplying by a scale it's going to be likely that the uint8 values will overflow.
     # To get around this upcast the image to a larger data type, then clip back to uint8 range.
     return np.clip(img.astype(np.float32) * strength, 0, 255).astype(np.uint8)
+
+def contrast(img: np.ndarray) -> np.ndarray:
+    pass
+
+def saturation(img: np.ndarray) -> np.ndarray:
+    pass
+
+def solarize(img: np.ndarray) -> np.ndarray:
+    pass
+
+def colorize(img: np.ndarray) -> np.ndarray:
+    pass
+
+def invert(img: np.ndarray) -> np.ndarray:
+    pass

@@ -9,7 +9,8 @@ import color
 # todo
 # accept arguments for actions
 # ig style filters? 
-#   contrast, saturation
+# composite two images together
+# histogram equalization
 
 
 # requirements.txt

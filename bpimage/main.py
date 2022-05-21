@@ -9,8 +9,7 @@ import color
 # todo
 # accept arguments for actions
 # ig style filters? 
-# clib in one c file? 
-# wrap all c functions in one py file for easier access? 
+#   contrast, saturation
 
 
 # requirements.txt
@@ -18,9 +17,6 @@ import color
 # handling keyboard interrupt in c?
 # compiling library/make file? 
 # add convovle error / affine error
-
-
-# black and white, color filters
 
 ACTIONS = {
     'boxblur': filters.boxblur,

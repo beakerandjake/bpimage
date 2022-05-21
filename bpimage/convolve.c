@@ -4,6 +4,13 @@
 #define COLOR_DEPTH 3
 
 /*
+Clamps a float value to be between the min and max of an unsigned char
+@param value: The value to clamp.
+@returns The original value clamped between 0 and 255.
+ */
+float clamp(float value);
+
+/*
 Applies a convolution kernel to the image and writes the result to the destination image.
 
 @param img_padded: A version of the source image padded on all sides by the kernel.
@@ -68,4 +75,10 @@ void convolve(unsigned char *img_padded, float *kern, unsigned char *dest, float
             dest[++pixel_offset] = clamp(b + bias);
         }
     }
+}
+
+float clamp(float value)
+{
+    const float ret = value < 0 ? 0 : value;
+    return ret > 255.0f ? 255.0f : ret;
 }

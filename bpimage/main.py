@@ -12,6 +12,9 @@ import color
 # composite two images together
 # histogram equalization
 
+# readme
+    # make gifs showing rotation / skew resize / strengths? 
+
 
 # requirements.txt
 # add setup.py for end users

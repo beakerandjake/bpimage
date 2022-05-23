@@ -86,7 +86,7 @@ def invert(img: np.ndarray) -> np.ndarray:
     return 255 - img
 
 
-def contrast(img: np.ndarray, strength: float = 100) -> np.ndarray:
+def contrast(img: np.ndarray, strength: float = 1.75) -> np.ndarray:
     # We are expecting a 8bit rgb image.
     # When multiplying these pixel values the results will likely be greater than 255.
     # These values would wraparound, which would give weird results even with a clip at the end.
@@ -98,8 +98,14 @@ def contrast(img: np.ndarray, strength: float = 100) -> np.ndarray:
 
     # use formula described in http://www.graficaobscura.com/interp/index.html
     # lerp the image from its average pixel color (gray).
-    return (((1.0-strength) * img.mean()) + (strength * img)).clip(0, 255).astype(np.uint8)
+    return (((1.0 - strength) * img.mean()) + (strength * img)).clip(0, 255).astype(np.uint8)
 
 
-def saturation(img: np.ndarray) -> np.ndarray:
-    pass
+def saturation(img: np.ndarray, strength: float = -2.5) -> np.ndarray:
+    # cast the image to float to handle overflow which could happen before the clip.
+    img = img.astype(np.float32)
+
+    # use formula described in http://www.graficaobscura.com/interp/index.html
+    # lerp the image from its grayscale version
+    blackandwhite = grayscale2rgb(rgb2grayscale(img))
+    return (((1.0 - strength) * blackandwhite) + (strength * img)).clip(0, 255).astype(np.uint8)

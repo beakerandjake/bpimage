@@ -58,7 +58,7 @@ def sepia(img: np.ndarray) -> np.ndarray:
     return np.clip(img @ transform.T, 0, 255).astype(np.uint8)
 
 
-def brightness(img: np.ndarray, strength: float = .05) -> np.ndarray:
+def brightness(img: np.ndarray, strength: float = 1.5) -> np.ndarray:
     """Modifies the brightness of the image.
 
     Args:
@@ -86,7 +86,7 @@ def invert(img: np.ndarray) -> np.ndarray:
     return 255 - img
 
 
-def contrast(img: np.ndarray, strength: float = 1.75) -> np.ndarray:
+def contrast(img: np.ndarray, strength: float = 1.55) -> np.ndarray:
     """Modify the contrast of the image. 
 
     Args:
@@ -111,7 +111,7 @@ def contrast(img: np.ndarray, strength: float = 1.75) -> np.ndarray:
     return (((1.0 - strength) * img.mean()) + (strength * img)).clip(0, 255).astype(np.uint8)
 
 
-def saturation(img: np.ndarray, strength: float = -2.5) -> np.ndarray:
+def saturation(img: np.ndarray, strength: float = 1.5) -> np.ndarray:
     """Modify the color saturation of the image. 
 
     Args:

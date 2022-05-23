@@ -8,19 +8,16 @@ import color
 
 # todo
 # accept arguments for actions
-# ig style filters? 
-# composite two images together
-# histogram equalization
-
-# readme
-    # make gifs showing rotation / skew resize / strengths? 
-
-
 # requirements.txt
-# add setup.py for end users
-# handling keyboard interrupt in c?
-# compiling library/make file? 
-# add convovle error / affine error
+# setup and compiling the c files for packaging.
+#   compiling library/make file?
+# error handling
+# readme
+#   make gifs showing rotation / skew resize / strengths?
+# image sliders that show before and after?
+# make public
+
+# ig style filters?
 
 ACTIONS = {
     'boxblur': filters.boxblur,

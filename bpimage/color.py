@@ -86,10 +86,19 @@ def invert(img: np.ndarray) -> np.ndarray:
     return 255 - img
 
 
-def contrast(img: np.ndarray, strength: float = 2.0) -> np.ndarray:
-    strength = max(strength, 0)
-    dest = (max(strength, 0) * (img - 128.0)) + 128.0
-    return dest.clip(0, 255).astype(np.uint8)
+def contrast(img: np.ndarray, strength: float = 100) -> np.ndarray:
+    # We are expecting a 8bit rgb image.
+    # When multiplying these pixel values the results will likely be greater than 255.
+    # These values would wraparound, which would give weird results even with a clip at the end.
+    # This is because values greater than 255 will have aready wrapped around before the clip.
+    #
+    # To get around this and at the cost of memory and runtime performance,
+    # Upcast the image to be stored as a float. This ensures we can hold values without wrap around.
+    img = img.astype(np.float32)
+
+    # use formula described in http://www.graficaobscura.com/interp/index.html
+    # lerp the image from its average pixel color (gray).
+    return (((1.0-strength) * img.mean()) + (strength * img)).clip(0, 255).astype(np.uint8)
 
 
 def saturation(img: np.ndarray) -> np.ndarray:

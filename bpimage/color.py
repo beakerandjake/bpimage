@@ -86,4 +86,12 @@ def colorize(img: np.ndarray) -> np.ndarray:
     pass
 
 def invert(img: np.ndarray) -> np.ndarray:
-    pass
+    """Create a negative of the image. 
+
+    Args:
+        img: The source 8bit RGB image with shape (h,w,3) 
+
+    Returns:
+        A new ndarray of dtype uint8 with shape (h,w,3) containing inverted image.
+    """
+    return 255 - img

@@ -58,7 +58,7 @@ def sepia(img: np.ndarray) -> np.ndarray:
     return np.clip(img @ transform.T, 0, 255).astype(np.uint8)
 
 
-def brighten(img: np.ndarray, strength: float = .05) -> np.ndarray:
+def brightness(img: np.ndarray, strength: float = .05) -> np.ndarray:
     """Modifies the brightness of the image.
 
     Args:

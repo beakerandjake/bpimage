@@ -39,7 +39,7 @@ ACTIONS = {
     'rgb2gray': color.rgb2grayscale,
     'gray2rgb': color.grayscale2rgb,
     'sepia': color.sepia,
-    'brighten': color.brighten,
+    'brightness': color.brightness,
     'contrast': color.contrast,
     'invert': color.invert,
     'saturation': color.saturation

@@ -6,7 +6,7 @@ import numpy as np
 
 def rgb2grayscale(img: np.ndarray) -> np.ndarray:
     """Converts an RGB image to a grayscale image.
-    Each RGB pixel becomes a single 8bit value representing the weighted sum of the colors. 
+    Each RGB pixel becomes a single 8bit value representing the weighted sum of the colors.
     Note this will modify the shape of the image from (h,w,3) to (h,w)
 
     Args:
@@ -24,7 +24,7 @@ def rgb2grayscale(img: np.ndarray) -> np.ndarray:
 
 def grayscale2rgb(img: np.ndarray) -> np.ndarray:
     """Converts an image in grayscale format to RGB format.
-    Each single 8bit pixel of the image is expanded into RGB channels. 
+    Each single 8bit pixel of the image is expanded into RGB channels.
     The shape of the image will be modified from (h,w) to (h,w,3).
 
     Args:
@@ -41,10 +41,10 @@ def grayscale2rgb(img: np.ndarray) -> np.ndarray:
 
 
 def sepia(img: np.ndarray) -> np.ndarray:
-    """Applies a sepia tone to an RGB image  
+    """Applies a sepia tone to an RGB image
 
     Args:
-        img: The source image image with shape (h,w,3) 
+        img: The source image image with shape (h,w,3)
 
     Returns:
         A new ndarray of dtype uint8 with shape (h,w,3) containing the sepia toned image
@@ -58,11 +58,11 @@ def sepia(img: np.ndarray) -> np.ndarray:
     return np.clip(img @ transform.T, 0, 255).astype(np.uint8)
 
 
-def brighten(img: np.ndarray, strength: float = 500.0) -> np.ndarray:
-    """Modifies the brightness of the image. 
+def brighten(img: np.ndarray, strength: float = .05) -> np.ndarray:
+    """Modifies the brightness of the image.
 
     Args:
-        img: The source 8bit RGB image with shape (h,w,3) 
+        img: The source 8bit RGB image with shape (h,w,3)
         strength: The amount to brighten or darken the image.
             A value of 0.0 will result in a black image, 1.0 gives the original image.
 
@@ -73,17 +73,6 @@ def brighten(img: np.ndarray, strength: float = 500.0) -> np.ndarray:
     # To get around this upcast the image to a larger data type, then clip back to uint8 range.
     return np.clip(img.astype(np.float32) * strength, 0, 255).astype(np.uint8)
 
-def contrast(img: np.ndarray) -> np.ndarray:
-    pass
-
-def saturation(img: np.ndarray) -> np.ndarray:
-    pass
-
-def solarize(img: np.ndarray) -> np.ndarray:
-    pass
-
-def colorize(img: np.ndarray) -> np.ndarray:
-    pass
 
 def invert(img: np.ndarray) -> np.ndarray:
     """Create a negative of the image. 
@@ -95,3 +84,13 @@ def invert(img: np.ndarray) -> np.ndarray:
         A new ndarray of dtype uint8 with shape (h,w,3) containing inverted image.
     """
     return 255 - img
+
+
+def contrast(img: np.ndarray, strength: float = 2.0) -> np.ndarray:
+    strength = max(strength, 0)
+    dest = (max(strength, 0) * (img - 128.0)) + 128.0
+    return dest.clip(0, 255).astype(np.uint8)
+
+
+def saturation(img: np.ndarray) -> np.ndarray:
+    pass

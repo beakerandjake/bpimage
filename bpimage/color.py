@@ -87,6 +87,16 @@ def invert(img: np.ndarray) -> np.ndarray:
 
 
 def contrast(img: np.ndarray, strength: float = 1.75) -> np.ndarray:
+    """Modify the contrast of the image. 
+
+    Args:
+        img: The source 8bit RGB image with shape (h,w,3) 
+        strength: The amount to modify the contrast.
+            A value of 0.0 will result in a gray image, 1.0 gives the original image.
+
+    Returns:
+        A new ndarray of dtype uint8 with shape (h,w,3) containing the contrast adjusted image.
+    """
     # We are expecting a 8bit rgb image.
     # When multiplying these pixel values the results will likely be greater than 255.
     # These values would wraparound, which would give weird results even with a clip at the end.
@@ -102,6 +112,16 @@ def contrast(img: np.ndarray, strength: float = 1.75) -> np.ndarray:
 
 
 def saturation(img: np.ndarray, strength: float = -2.5) -> np.ndarray:
+    """Modify the color saturation of the image. 
+
+    Args:
+        img: The source 8bit RGB image with shape (h,w,3) 
+        strength: The amount to modify the saturation.
+            A value of 0.0 will result in a black and white image, 1.0 gives the original image.
+
+    Returns:
+        A new ndarray of dtype uint8 with shape (h,w,3) containing the saturation adjusted image.
+    """
     # cast the image to float to handle overflow which could happen before the clip.
     img = img.astype(np.float32)
 

@@ -42,6 +42,19 @@ ACTIONS = {
     'saturation': color.saturation
 }
 
+ACTIONS2 = {
+    'invert': {
+        'args': {
+            'action': 'store_true',
+            'help': 'Invert the colors of the image, producing a negative.'
+        },
+        'command': color.invert
+    }
+}
+
+# action specify short name and full name.
+# specify help, specify args.
+
 
 def parse_args():
     parser = ArgumentParser(description="CLI for bpimage library")
@@ -50,6 +63,9 @@ def parse_args():
     parser.add_argument('-a', '--action', choices=ACTIONS.keys(), nargs="+")
     parser.add_argument('-d', '--debug', action='store_true',
                         help='creates a temporary image and displays using the default image viewer')
+
+    for key, value in ACTIONS2.items():
+        parser.add_argument(f'--{key}', **value['args'])
 
     # if no args provided, output the help message
     if len(sys.argv) < 2:
@@ -62,10 +78,10 @@ def parse_args():
 def process_img(args):
     img = io_utils.open(args.source)
 
-    if args.action:
-        for action in args.action:
-            img = ACTIONS[action](img)
-
+    for key, value in ACTIONS2.items():
+        if getattr(args, key):
+            img = value['command'](img)
+            
     if args.output:
         io_utils.save(img, args.output)
 

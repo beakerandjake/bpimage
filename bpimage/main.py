@@ -32,13 +32,27 @@ ACTIONS = {
     'rotate90': transform.rotate90,
     'rotate': transform.rotate,
     'rescale': transform.rescale,
-    'shear': transform.shear,
-    'rgb2gray': color.rgb2grayscale,
-    'gray2rgb': color.grayscale2rgb
+    'shear': transform.shear
 }
 
 ACTIONS2 = {
-    'sepia':{
+    'rgb2gray': {
+        'args': {
+            'action': 'store_const',
+            'help': 'Converts the image to Grayscale, modifying the shape of an image from RGB (w,h,3) to grayscale (w,h,1).',
+            'const': []
+        },
+        'command': color.rgb2grayscale
+    },
+    'gray2rgb': {
+        'args': {
+            'action': 'store_const',
+            'help': 'Converts the shape of an image from grayscale (w,h,1) to RGB (w,h,3).',
+            'const': []
+        },
+        'command': color.grayscale2rgb
+    },
+    'sepia': {
         'args': {
             'action': 'store_const',
             'help': 'Applies a sepia effect to the image.',

@@ -45,13 +45,16 @@ def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
 
     Args:
         img: The image to blur.
-        radius: Number of pixels to take in each direction. a radius of zero or below does nothing
+        radius: Number of pixels to take in each direction.
 
     Returns:
         A new ndarray containing the result of the blur operation
+    
+    Raises: 
+        ValueError: The radius was negative.
     """
     if radius < 1:
-        return img
+        raise ValueError('Radius must be positive.')
 
     # create a kernel with the desired radius.
     size = (radius*2)+1

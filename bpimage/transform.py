@@ -21,17 +21,19 @@ def flipv(img: np.ndarray) -> np.ndarray:
     """Flips the image across the vertical, from left to right.
 
     Args:
-        img: The image to flip.
+        img: The source RGB image with shape=(h,w,3).
 
     Returns:
-        A new ndarray containing the result of the flip
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
+
+    Raises:
+        ValueError: img was not RGB.
     """
-    dest = np.zeros(img.shape, dtype=np.uint8)
+    dest = np.empty(img.shape, dtype=np.uint8)
 
-    # matrix which flips the image across the y axis at the origin
-    # and then slides it back "in frame"
+    # create matrix which flips at the origin then slides it back "in frame"
     tform = _inverse_transform(scale_x=-1, offset_x=img.shape[1]-1)
-
+    
     return _affine_transformation(img, tform, dest)
 
 
@@ -39,15 +41,17 @@ def fliph(img: np.ndarray) -> np.ndarray:
     """Flips the image across the horizontal, from bottom to top.
 
     Args:
-        img: The image to flip.
+        img: The source RGB image with shape=(h,w,3).
 
     Returns:
-        A new ndarray containing the result of the flip
-    """
-    dest = np.zeros(img.shape, dtype=np.uint8)
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
 
-    # matrix which flips the image across the x axis at the origin
-    # and then slides it back "in frame"
+    Raises:
+        ValueError: img was not RGB.
+    """
+    dest = np.empty(img.shape, dtype=np.uint8)
+
+    # create matrix which flips at the origin then slides it back "in frame"
     tform = _inverse_transform(scale_y=-1, offset_y=img.shape[0] - 1)
 
     return _affine_transformation(img, tform, dest)
@@ -122,16 +126,28 @@ def rotate(img: np.ndarray, angle: float = 45, expand=True) -> np.ndarray:
     return _affine_transformation(img, tform, dest)
 
 
-def rescale(img: np.ndarray, scale: float) -> np.ndarray:
+def scale(img: np.ndarray, scale: float) -> np.ndarray:
     """Re-sizes the image uniformly based on a scale factor
 
     Args:
         img: The image to scale.
+
+
+    Returns:
+        A new ndarray containing the result of the scale
+
+
+    Args:
+        img: The source RGB image with shape=(h,w,3).
         scale: Non-zero positive number multiplied by the width and height of the image
             to determine the dimensions of the resulting image.  
 
     Returns:
-        A new ndarray containing the result of the scale
+        A new ndarray with dtype=uint8 and shape=(h * scale,w * scale, 3).
+
+    Raises:
+        ValueError: img was not RGB.
+        ValueError: scale was less than or equal than zero.
     """
     if(scale <= 0):
         raise ValueError('Scale must be greater than zero')
@@ -141,7 +157,7 @@ def rescale(img: np.ndarray, scale: float) -> np.ndarray:
 
     # calculate the dimensions of the image after scaling is applied
     height, width = _calc_new_img_size(img.shape, tform)
-    dest = np.zeros((height, width, 3), dtype=np.uint8)
+    dest = np.empty((height, width, 3), dtype=np.uint8)
 
     return _affine_transformation(img, tform, dest)
 

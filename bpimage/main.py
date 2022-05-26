@@ -91,21 +91,6 @@ ACTIONS2 = {
         },
         'command': color.saturation
     },
-
-
-
-
-
-
-
-    'fliph': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Flips the image across the horizontal, from bottom to top.',
-            'const': []
-        },
-        'command': transform.fliph
-    },
     'flipv': {
         'args': {
             'action': 'store_const',
@@ -114,6 +99,14 @@ ACTIONS2 = {
         },
         'command': transform.flipv
     },
+    'fliph': {
+        'args': {
+            'action': 'store_const',
+            'help': 'Flips the image across the horizontal, from bottom to top.',
+            'const': []
+        },
+        'command': transform.fliph
+    },
     'scale': {
         'args': {
             'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image.',
@@ -121,8 +114,15 @@ ACTIONS2 = {
             'type': float,
             'metavar': 'factor'
         },
-        'command': transform.rescale
+        'command': transform.scale
     },
+
+
+
+
+
+
+
     'boxblur': {
         'args': {
             'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction.',

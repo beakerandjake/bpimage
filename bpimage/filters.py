@@ -138,6 +138,7 @@ def motion_blur(img: np.ndarray) -> np.ndarray:
     Returns:
         A new ndarray containing the result of the motion blur operation
     """
+    # create a kernel with ones on a diagonal going from right to left. 
     size = 9
     kern = np.zeros((size, size), dtype=np.float32)
     np.fill_diagonal(np.fliplr(kern), (1/size))

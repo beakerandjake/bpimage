@@ -167,6 +167,14 @@ ACTIONS2 = {
         },
         'command': filters.gaussian_blur
     },
+    'motionblur': {
+        'args': {
+            'help': 'Applies a motion blur to the image.',
+            'const': [],
+            'action': 'store_const'
+        },
+        'command': filters.motion_blur
+    },
 }
 
 # action specify short name and full name.

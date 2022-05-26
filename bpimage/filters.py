@@ -1,4 +1,4 @@
-"""Functions for filtering images by appling kernels to each pixel using convolution
+"""Functions for filtering images by applying kernels to each pixel using convolution
 """
 import ctypes
 import numpy as np
@@ -41,17 +41,18 @@ def gaussian_blur(img: np.ndarray, radius: int = 1, sig: float = 1.) -> np.ndarr
 
 
 def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
-    """Applies a box blur of the specified size to the image.
+    """Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction.
 
     Args:
-        img: The image to blur.
+        img: The source RGB image with shape=(h,w,3).
         radius: Number of pixels to take in each direction.
 
     Returns:
-        A new ndarray containing the result of the blur operation
-    
-    Raises: 
-        ValueError: The radius was negative.
+        A new ndarray with dtype=uint8 and shape=(h,w,1).
+
+    Raises:
+        ValueError: img was not RGB.
+        ValueError: radius was less than one.
     """
     if radius < 1:
         raise ValueError('Radius must be positive.')
@@ -94,7 +95,7 @@ def sharpen(img: np.ndarray, strength: float = 5.0) -> np.ndarray:
     if strength < 0:
         raise ValueError('Strength must be positive.')
 
-    # build a sharpening kernel with the specified strength. 
+    # build a sharpening kernel with the specified strength.
     # use formula defined in: https://en.wikipedia.org/wiki/Unsharp_masking#Digital_unsharp_masking
 
     a = np.array([[0, 0, 0],
@@ -138,13 +139,12 @@ def motion_blur(img: np.ndarray) -> np.ndarray:
     Returns:
         A new ndarray containing the result of the motion blur operation
     """
-    # create a kernel with ones on a diagonal going from right to left. 
+    # create a kernel with ones on a diagonal going from right to left.
     size = 9
     kern = np.zeros((size, size), dtype=np.float32)
     np.fill_diagonal(np.fliplr(kern), (1/size))
 
     return _convolve(img, kern)
-
 
 
 def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:

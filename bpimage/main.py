@@ -1,7 +1,7 @@
 
 import sys
 from argparse import ArgumentParser
-from xml.dom import WrongDocumentErr
+import collections.abc
 import io_utils
 import filters
 import transform
@@ -31,7 +31,6 @@ ACTIONS = {
 }
 
 ACTIONS2 = {
-
     'rgb2gray': {
         'args': {
             'action': 'store_const',
@@ -58,7 +57,7 @@ ACTIONS2 = {
     },
     'brightness': {
         'args': {
-            'help': 'Increase or decrease the brightness of the image based on the strength (%(type)s). A value of 0.0 will result in a black image, 1.0 gives the original image.',
+            'help': 'Increase or decrease the brightness of the image based on the strength. A value of 0.0 will result in a black image, 1.0 gives the original image. (type:%(type)s)',
             'nargs': 1,
             'type': float,
             'metavar': 'strength'
@@ -75,7 +74,7 @@ ACTIONS2 = {
     },
     'contrast': {
         'args': {
-            'help': 'Increase or decrease the contrast of the image based on the strength (%(type)s). A value of 0.0 will result in a gray image, 1.0 gives the original image.',
+            'help': 'Increase or decrease the contrast of the image based on the strength. A value of 0.0 will result in a gray image, 1.0 gives the original image. (type:%(type)s)',
             'nargs': 1,
             'type': float,
             'metavar': 'strength'
@@ -84,7 +83,7 @@ ACTIONS2 = {
     },
     'saturation': {
         'args': {
-            'help': 'Increase or decrease the saturation of the image based on the strength (%(type)s). A value of 0.0 will result in a black and white image, 1.0 gives the original image.',
+            'help': 'Increase or decrease the saturation of the image based on the strength. A value of 0.0 will result in a black and white image, 1.0 gives the original image. (type:%(type)s)',
             'nargs': 1,
             'type': float,
             'metavar': 'strength'
@@ -109,29 +108,30 @@ ACTIONS2 = {
     },
     'scale': {
         'args': {
-            'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image.',
+            'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image. (type:%(type)s)',
             'nargs': 1,
             'type': float,
             'metavar': 'factor'
         },
         'command': transform.scale
     },
-
-
-
-
-
-
-
     'boxblur': {
         'args': {
-            'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction.',
-            'nargs': 1,
+            'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction. (default:%(default)s, type:%(type)s)',
+            'nargs': '?',
             'type': int,
+            'default': 1,
             'metavar': 'radius'
         },
         'command': filters.boxblur
     },
+
+
+
+
+
+
+
     'outline': {
         'args': {
             'help': 'Applies an edge detection kernel to the image.',
@@ -156,15 +156,6 @@ ACTIONS2 = {
             'metavar': 'strength'
         },
         'command': filters.sharpen
-    },
-    'boxblur': {
-        'args': {
-            'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction.',
-            'nargs': 1,
-            'type': int,
-            'metavar': 'radius'
-        },
-        'command': filters.boxblur
     },
     'gaussian': {
         'args': {
@@ -210,17 +201,13 @@ def parse_args():
 def process_img(args):
     img = io_utils.open(args.source)
 
-    # print(vars(args))
-    # print()
-    # print()
-
     for key, value in ACTIONS2.items():
         # print('iterating:', key, 'value:', value)
         if (action_args := getattr(args, key)) is not None:
-            # print(action_args)
-            # print(value)
-            # print()
-            img = value['command'](img, *action_args)
+            if isinstance(action_args, collections.abc.Sequence):
+                img = value['command'](img, *action_args)
+            else:
+                img = value['command'](img, action_args)
 
     if args.output:
         io_utils.save(img, args.output)

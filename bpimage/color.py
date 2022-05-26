@@ -2,6 +2,7 @@
 """Functions for modifying the colors of images.
 """
 import numpy as np
+from validation import ensure_8bit_rgb
 
 
 def rgb2grayscale(img: np.ndarray) -> np.ndarray:
@@ -17,8 +18,7 @@ def rgb2grayscale(img: np.ndarray) -> np.ndarray:
     Raises:
         ValueError: img was not RGB.
     """
-    if img.ndim != 3 and img.shape[-1] != 3:
-        raise ValueError("img must be RGB.")
+    ensure_8bit_rgb(img)
 
     # using weighted averages defined in https://en.wikipedia.org/wiki/Grayscale#Converting_colour_to_grayscale
     return (img @ np.array([.2126, .7152, .0722])).clip(0, 255).astype(np.uint8)
@@ -56,8 +56,7 @@ def sepia(img: np.ndarray) -> np.ndarray:
     Raises:
         ValueError: img was not RGB.
     """
-    if img.ndim != 3 and img.shape[-1] != 3:
-        raise ValueError("img must be RGB.")
+    ensure_8bit_rgb(img)
 
     # using common weights defined at https://stackoverflow.com/questions/36434905
     transform = np.array([[.393, .769, .189],
@@ -83,8 +82,8 @@ def brightness(img: np.ndarray, strength: float) -> np.ndarray:
         ValueError: img was not RGB.
         ValueError: strength was negative.
     """
-    if img.ndim != 3 and img.shape[-1] != 3:
-        raise ValueError("img must be RGB.")
+    ensure_8bit_rgb(img)
+
     if(strength < 0):
         raise ValueError("strength must be positive.")
 
@@ -105,8 +104,7 @@ def invert(img: np.ndarray) -> np.ndarray:
     Raises:
         ValueError: img was not RGB.
     """
-    if img.ndim != 3 and img.shape[-1] != 3:
-        raise ValueError("img must be RGB.")
+    ensure_8bit_rgb(img)
 
     return 255 - img
 
@@ -125,8 +123,7 @@ def contrast(img: np.ndarray, strength: float) -> np.ndarray:
     Raises:
         ValueError: img was not RGB.
     """
-    if img.ndim != 3 and img.shape[-1] != 3:
-        raise ValueError("img must be RGB.")
+    ensure_8bit_rgb(img)
 
     # We are expecting a 8bit rgb image.
     # When multiplying these pixel values the results will likely be greater than 255.
@@ -156,8 +153,7 @@ def saturation(img: np.ndarray, strength: float) -> np.ndarray:
     Raises:
         ValueError: img was not RGB.
     """
-    if img.ndim != 3 and img.shape[-1] != 3:
-        raise ValueError("img must be RGB.")
+    ensure_8bit_rgb(img)
 
     # cast the image to float to handle overflow which could happen before the clip.
     img = img.astype(np.float32)

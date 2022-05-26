@@ -48,7 +48,7 @@ def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
         radius: Number of pixels to take in each direction.
 
     Returns:
-        A new ndarray with dtype=uint8 and shape=(h,w,1).
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
 
     Raises:
         ValueError: img was not RGB.
@@ -65,13 +65,16 @@ def boxblur(img: np.ndarray, radius: int = 1) -> np.ndarray:
 
 
 def outline(img: np.ndarray) -> np.ndarray:
-    """Applies an edge detection kernel to the image.
+    """Highlights edges of the image. 
 
     Args:
-        img: The image to apply the operation to.
+        img: The source RGB image with shape=(h,w,3).
 
     Returns:
-        A new ndarray containing the result of the edge detection operation
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
+
+    Raises:
+        ValueError: img was not RGB.
     """
     kern = np.array([[-1, -1, -1],
                      [-1, 8, -1],
@@ -80,16 +83,17 @@ def outline(img: np.ndarray) -> np.ndarray:
 
 
 def sharpen(img: np.ndarray, strength: float = 5.0) -> np.ndarray:
-    """Applies a sharpening kernel to the image.
+    """Sharpens the image.
 
     Args:
-        img: The image to sharpen.
+        img: The source RGB image with shape=(h,w,3).
         strength: The strength of the sharpen affect (higher values may result in artifacts). 
 
     Returns:
-        A new ndarray containing the result of the sharpening operation
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
 
-    Raises: 
+    Raises:
+        ValueError: img was not RGB.
         ValueError: The strength was negative.
     """
     if strength < 0:
@@ -107,6 +111,7 @@ def sharpen(img: np.ndarray, strength: float = 5.0) -> np.ndarray:
                   [0, 1, 0]], dtype=np.float32) / 5
 
     kern = a + ((a - b) * strength)
+
     return _convolve(img, kern)
 
 
@@ -134,10 +139,13 @@ def motion_blur(img: np.ndarray) -> np.ndarray:
     """Applies motion blur to the image.
 
     Args:
-        img: The image to blur.
+        img: The source RGB image with shape=(h,w,3).
 
     Returns:
-        A new ndarray containing the result of the motion blur operation
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
+
+    Raises:
+        ValueError: img was not RGB.
     """
     # create a kernel with ones on a diagonal going from right to left.
     size = 9

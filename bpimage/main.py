@@ -125,16 +125,9 @@ ACTIONS2 = {
         },
         'command': filters.boxblur
     },
-
-
-
-
-
-
-
     'outline': {
         'args': {
-            'help': 'Applies an edge detection kernel to the image.',
+            'help': 'Highlights edges of the image.',
             'const': [],
             'action': 'store_const'
         },
@@ -142,28 +135,12 @@ ACTIONS2 = {
     },
     'sharpen': {
         'args': {
-            'help': 'Sharpens the image.',
-            'const': [],
-            'action': 'store_const'
-        },
-        'command': filters.sharpen
-    },
-    'sharpen': {
-        'args': {
-            'help': 'Sharpens the image.',
+            'help': 'Sharpens the image. (type:%(type)s)',
             'nargs': 1,
             'type': float,
             'metavar': 'strength'
         },
         'command': filters.sharpen
-    },
-    'gaussian': {
-        'args': {
-            'help': 'Applies a gaussian blur to the image. the image.',
-            'const': [],
-            'action': 'store_const'
-        },
-        'command': filters.gaussian_blur
     },
     'motionblur': {
         'args': {
@@ -173,6 +150,19 @@ ACTIONS2 = {
         },
         'command': filters.motion_blur
     },
+
+
+
+
+    'gaussian': {
+        'args': {
+            'help': 'Applies a gaussian blur to the image. the image.',
+            'const': [],
+            'action': 'store_const'
+        },
+        'command': filters.gaussian_blur
+    },
+
 }
 
 # action specify short name and full name.

@@ -75,18 +75,34 @@ def outline(img: np.ndarray) -> np.ndarray:
     return _convolve(img, kern)
 
 
-def sharpen(img: np.ndarray) -> np.ndarray:
+def sharpen(img: np.ndarray, strength: float = 5.0) -> np.ndarray:
     """Applies a sharpening kernel to the image.
 
     Args:
         img: The image to sharpen.
+        strength: The strength of the sharpen affect (higher values may result in artifacts). 
 
     Returns:
         A new ndarray containing the result of the sharpening operation
+
+    Raises: 
+        ValueError: The strength was negative.
     """
-    kern = np.array([[0, -1, 0],
-                     [-1, 5, -1],
-                     [0, -1, 0]], dtype=np.float32)
+    if strength < 0:
+        raise ValueError('Strength must be positive.')
+
+    # build a sharpening kernel with the specified strength. 
+    # use formula defined in: https://en.wikipedia.org/wiki/Unsharp_masking#Digital_unsharp_masking
+
+    a = np.array([[0, 0, 0],
+                  [0, 1, 0],
+                  [0, 0, 0]], dtype=np.float32)
+
+    b = np.array([[0, 1, 0],
+                  [1, 1, 1],
+                  [0, 1, 0]], dtype=np.float32) / 5
+
+    kern = a + ((a - b) * strength)
     return _convolve(img, kern)
 
 

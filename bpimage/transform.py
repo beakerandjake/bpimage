@@ -130,14 +130,6 @@ def scale(img: np.ndarray, scale: float) -> np.ndarray:
     """Re-sizes the image uniformly based on a scale factor
 
     Args:
-        img: The image to scale.
-
-
-    Returns:
-        A new ndarray containing the result of the scale
-
-
-    Args:
         img: The source RGB image with shape=(h,w,3).
         scale: Non-zero positive number multiplied by the width and height of the image
             to determine the dimensions of the resulting image.  

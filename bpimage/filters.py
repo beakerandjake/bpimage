@@ -145,22 +145,6 @@ def motion_blur(img: np.ndarray) -> np.ndarray:
     return _convolve(img, kern)
 
 
-def smooth(img: np.ndarray) -> np.ndarray:
-    """Applies a smoothing kernel to the image.
-
-    Args:
-        img: The image to smooth.
-
-    Returns:
-        A new ndarray containing the result of the smooth operation
-    """
-    kern = np.array([[1, 1,  1, 1, 1],
-                     [1, 5,  5, 5, 1],
-                     [1, 5, 44, 5, 1],
-                     [1, 5,  5, 5, 1],
-                     [1, 1,  1, 1, 1]], dtype=np.float32) / 100
-    return _convolve(img, kern)
-
 
 def _convolve(img: np.ndarray, kern: np.ndarray, bias=0.0) -> np.ndarray:
     """Applies the kernel to the image, delegating the convolve to the c library.

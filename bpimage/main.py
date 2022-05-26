@@ -1,6 +1,7 @@
 
 import sys
 from argparse import ArgumentParser
+from xml.dom import WrongDocumentErr
 import io_utils
 import filters
 import transform
@@ -8,6 +9,8 @@ import color
 
 # todo
 # accept arguments for actions
+# spell check
+# consistent comments / naming
 # requirements.txt
 # setup and compiling the c files for packaging.
 #   compiling library/make file?
@@ -17,25 +20,61 @@ import color
 # image sliders that show before and after?
 # make public
 
+
 # ig style filters?
 
 ACTIONS = {
-    'boxblur': filters.boxblur,
     'gaussian_blur': filters.gaussian_blur,
     'motion_blur': filters.motion_blur,
-    'sharpen': filters.sharpen,
-    'outline': filters.outline,
     'emboss': filters.emboss,
-    'smooth': filters.smooth,
-    'flipv': transform.flipv,
-    'fliph': transform.fliph,
-    'rotate90': transform.rotate90,
     'rotate': transform.rotate,
-    'rescale': transform.rescale,
     'shear': transform.shear
 }
 
 ACTIONS2 = {
+    'saturation': {
+        'args': {
+            'help': 'Increase or decrease the saturation of the image based on the strength (%(type)s). A value of 0.0 will result in a black and white image, 1.0 gives the original image.',
+            'nargs': 1,
+            'type': float,
+            'metavar': 'strength'
+        },
+        'command': color.saturation
+    },
+    'invert': {
+        'args': {
+            'action': 'store_const',
+            'help': 'Invert the colors of the image, producing a negative.',
+            'const': []
+        },
+        'command': color.invert
+    },
+    'contrast': {
+        'args': {
+            'help': 'Increase or decrease the contrast of the image based on the strength (%(type)s). A value of 0.0 will result in a gray image, 1.0 gives the original image.',
+            'nargs': 1,
+            'type': float,
+            'metavar': 'strength'
+        },
+        'command': color.contrast
+    },
+    'brightness': {
+        'args': {
+            'help': 'Increase or decrease the brightness of the image based on the strength (%(type)s). A value of 0.0 will result in a black image, 1.0 gives the original image.',
+            'nargs': 1,
+            'type': float,
+            'metavar': 'strength'
+        },
+        'command': color.brightness
+    },
+    'sepia': {
+        'args': {
+            'action': 'store_const',
+            'help': 'Applies a sepia effect to the image.',
+            'const': []
+        },
+        'command': color.sepia
+    },
     'rgb2gray': {
         'args': {
             'action': 'store_const',
@@ -52,49 +91,82 @@ ACTIONS2 = {
         },
         'command': color.grayscale2rgb
     },
-    'sepia': {
+    'fliph': {
         'args': {
             'action': 'store_const',
-            'help': 'Applies a sepia effect to the image.',
+            'help': 'Flips the image across the horizontal, from bottom to top.',
             'const': []
         },
-        'command': color.sepia
+        'command': transform.fliph
     },
-    'brightness': {
-        'args': {
-            'help': 'Increase or decrease the brightness of the image based on the strength (%(type)s). A value of 0.0 will result in a black image, 1.0 gives the original image.',
-            'nargs': 1,
-            'type': float,
-            'metavar': 'strength'
-        },
-        'command': color.brightness
-    },
-    'contrast': {
-        'args': {
-            'help': 'Increase or decrease the contrast of the image based on the strength (%(type)s). A value of 0.0 will result in a gray image, 1.0 gives the original image.',
-            'nargs': 1,
-            'type': float,
-            'metavar': 'strength'
-        },
-        'command': color.contrast
-    },
-    'invert': {
+    'flipv': {
         'args': {
             'action': 'store_const',
-            'help': 'Invert the colors of the image, producing a negative.',
+            'help': 'Flips the image across the vertical, from left to right.',
             'const': []
         },
-        'command': color.invert
+        'command': transform.flipv
     },
-    'saturation': {
+    'scale': {
         'args': {
-            'help': 'Increase or decrease the saturation of the image based on the strength (%(type)s). A value of 0.0 will result in a black and white image, 1.0 gives the original image.',
+            'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image.',
+            'nargs': 1,
+            'type': float,
+            'metavar': 'factor'
+        },
+        'command': transform.rescale
+    },
+    'boxblur': {
+        'args': {
+            'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction.',
+            'nargs': 1,
+            'type': int,
+            'metavar': 'radius'
+        },
+        'command': filters.boxblur
+    },
+    'outline': {
+        'args': {
+            'help': 'Applies an edge detection kernel to the image.',
+            'const': [],
+            'action': 'store_const'
+        },
+        'command': filters.outline
+    },
+    'sharpen': {
+        'args': {
+            'help': 'Sharpens the image.',
+            'const': [],
+            'action': 'store_const'
+        },
+        'command': filters.sharpen
+    },
+    'sharpen': {
+        'args': {
+            'help': 'Sharpens the image.',
             'nargs': 1,
             'type': float,
             'metavar': 'strength'
         },
-        'command': color.saturation
-    }
+        'command': filters.sharpen
+    },
+    'boxblur': {
+        'args': {
+            'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction.',
+            'nargs': 1,
+            'type': int,
+            'metavar': 'radius'
+        },
+        'command': filters.boxblur
+    },
+    'gaussian': {
+        'args': {
+            'help': 'Applies a gaussian blur to the image. the image.',
+            'const': [],
+            'action': 'store_const'
+        },
+        'command': filters.gaussian_blur
+    },
 }
 
 # action specify short name and full name.
@@ -123,8 +195,16 @@ def parse_args():
 def process_img(args):
     img = io_utils.open(args.source)
 
+    # print(vars(args))
+    # print()
+    # print()
+
     for key, value in ACTIONS2.items():
+        # print('iterating:', key, 'value:', value)
         if (action_args := getattr(args, key)) is not None:
+            # print(action_args)
+            # print(value)
+            # print()
             img = value['command'](img, *action_args)
 
     if args.output:

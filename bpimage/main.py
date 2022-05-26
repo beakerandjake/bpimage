@@ -25,21 +25,45 @@ import color
 
 ACTIONS = {
     'gaussian_blur': filters.gaussian_blur,
-    'motion_blur': filters.motion_blur,
     'emboss': filters.emboss,
     'rotate': transform.rotate,
     'shear': transform.shear
 }
 
 ACTIONS2 = {
-    'saturation': {
+
+    'rgb2gray': {
         'args': {
-            'help': 'Increase or decrease the saturation of the image based on the strength (%(type)s). A value of 0.0 will result in a black and white image, 1.0 gives the original image.',
+            'action': 'store_const',
+            'help': 'Converts the image to Grayscale.',
+            'const': []
+        },
+        'command': color.rgb2grayscale
+    },
+    'gray2rgb': {
+        'args': {
+            'action': 'store_const',
+            'help': 'Converts the shape of an image from grayscale (w,h,1) to RGB (w,h,3).',
+            'const': []
+        },
+        'command': color.grayscale2rgb
+    },
+    'sepia': {
+        'args': {
+            'action': 'store_const',
+            'help': 'Applies a sepia effect to the image.',
+            'const': []
+        },
+        'command': color.sepia
+    },
+    'brightness': {
+        'args': {
+            'help': 'Increase or decrease the brightness of the image based on the strength (%(type)s). A value of 0.0 will result in a black image, 1.0 gives the original image.',
             'nargs': 1,
             'type': float,
             'metavar': 'strength'
         },
-        'command': color.saturation
+        'command': color.brightness
     },
     'invert': {
         'args': {
@@ -58,39 +82,22 @@ ACTIONS2 = {
         },
         'command': color.contrast
     },
-    'brightness': {
+    'saturation': {
         'args': {
-            'help': 'Increase or decrease the brightness of the image based on the strength (%(type)s). A value of 0.0 will result in a black image, 1.0 gives the original image.',
+            'help': 'Increase or decrease the saturation of the image based on the strength (%(type)s). A value of 0.0 will result in a black and white image, 1.0 gives the original image.',
             'nargs': 1,
             'type': float,
             'metavar': 'strength'
         },
-        'command': color.brightness
+        'command': color.saturation
     },
-    'sepia': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Applies a sepia effect to the image.',
-            'const': []
-        },
-        'command': color.sepia
-    },
-    'rgb2gray': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Converts the image to Grayscale, modifying the shape of an image from RGB (w,h,3) to grayscale (w,h,1).',
-            'const': []
-        },
-        'command': color.rgb2grayscale
-    },
-    'gray2rgb': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Converts the shape of an image from grayscale (w,h,1) to RGB (w,h,3).',
-            'const': []
-        },
-        'command': color.grayscale2rgb
-    },
+
+
+
+
+
+
+
     'fliph': {
         'args': {
             'action': 'store_const',

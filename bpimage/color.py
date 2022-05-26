@@ -10,7 +10,7 @@ def rgb2grayscale(img: np.ndarray) -> np.ndarray:
     Each RGB pixel becomes a single 8bit value representing the weighted sum of the channels.
 
     Args:
-        img: The source RGB image with dtype=uint8 and shape=(h,w,3).
+        img: The source RGB image with shape=(h,w,3).
 
     Returns:
         A new ndarray with dtype=uint8 and shape=(h,w,1).
@@ -29,7 +29,7 @@ def grayscale2rgb(img: np.ndarray) -> np.ndarray:
     Each single 8bit pixel of the image is expanded into RGB channels.
 
     Args:
-        img: The source grayscale image with dtype=uint8 and shape=(h,w,1).
+        img: The source grayscale image with shape=(h,w,1).
 
     Returns:
         A new ndarray with dtype=uint8 and shape=(h,w,3).
@@ -48,7 +48,7 @@ def sepia(img: np.ndarray) -> np.ndarray:
     """Applies a sepia tone to an RGB image
 
     Args:
-        img: The source RGB image with dtype=uint8 and shape=(h,w,3).
+        img: The source RGB image with shape=(h,w,3).
 
     Returns:
         A new ndarray with dtype=uint8 and shape=(h,w,3).
@@ -71,7 +71,7 @@ def brightness(img: np.ndarray, strength: float) -> np.ndarray:
     """Modifies the brightness of the image.
 
     Args:
-        img: The source RGB image with dtype=uint8 and shape=(h,w,3).
+        img: The source RGB image with shape=(h,w,3).
         strength: The amount to brighten or darken the image.
             A value of 0.0 will result in a black image, 1.0 gives the original image.
 
@@ -96,7 +96,7 @@ def invert(img: np.ndarray) -> np.ndarray:
     """Create a negative of the image. 
 
     Args:
-        img: The source RGB image with dtype=uint8 and shape=(h,w,3).
+        img: The source RGB image with shape=(h,w,3).
 
     Returns:
         A new ndarray with dtype=uint8 and shape=(h,w,1).
@@ -113,7 +113,7 @@ def contrast(img: np.ndarray, strength: float) -> np.ndarray:
     """Modify the contrast of the image. 
 
     Args:
-        img: The source RGB image with dtype=uint8 and shape=(h,w,3).
+        img: The source RGB image with shape=(h,w,3).
         strength: The amount to modify the contrast.
             A value of 0.0 will result in a gray image, 1.0 gives the original image.
 
@@ -143,7 +143,7 @@ def saturation(img: np.ndarray, strength: float) -> np.ndarray:
     """Modify the color saturation of the image. 
 
     Args:
-        img: The source RGB image with dtype=uint8 and shape=(h,w,3).
+        img: The source RGB image with shape=(h,w,3).
         strength: The amount to modify the saturation.
             A value of 0.0 will result in a black and white image, 1.0 gives the original image.
 

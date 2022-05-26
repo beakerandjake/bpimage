@@ -1,4 +1,4 @@
-"""Functions for appling transformations to the image such as rotation and scaling.
+"""Functions for applying transformations to the image such as rotation and scaling.
 """
 import ctypes
 import math
@@ -122,7 +122,7 @@ def rotate(img: np.ndarray, angle: float = 45, expand=True) -> np.ndarray:
     return _affine_transformation(img, tform, dest)
 
 
-def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
+def rescale(img: np.ndarray, scale: float) -> np.ndarray:
     """Re-sizes the image uniformly based on a scale factor
 
     Args:
@@ -146,7 +146,7 @@ def rescale(img: np.ndarray, scale: float = 2) -> np.ndarray:
     return _affine_transformation(img, tform, dest)
 
 
-def shear(img: np.ndarray, shear_x: float = .25, shear_y: float = .25, expand=True) -> np.ndarray:
+def shear(img: np.ndarray, shear_x: float = 1.0, shear_y: float = 1.0, expand=True) -> np.ndarray:
     """Shears the image in the specified dimension(s)
 
     Args:

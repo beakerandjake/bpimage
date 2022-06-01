@@ -27,6 +27,7 @@ class ParseMultipleTypes(Action):
     """Custom argparse.Action which supports multiple arguments with different types. 
     args are zipped with the types and each argument will be converted to its respective type.  
     """
+
     def __init__(self, types, *args, **kwargs):
         self._types = types
         super(ParseMultipleTypes, self).__init__(*args, **kwargs)
@@ -35,11 +36,13 @@ class ParseMultipleTypes(Action):
         setattr(args, self.dest, list(self._convert_types(values, parser)))
 
     def _convert_types(self, values, parser):
-        for (arg,desired_type) in zip(values, self._types):
-            try:        
+        for (arg, desired_type) in zip(values, self._types):
+            try:
                 yield desired_type(arg)
             except (ValueError, TypeError, ArgumentTypeError):
-                parser.error(f'argument --{self.dest}: invalid {desired_type.__name__} value: \'{arg}\'')
+                parser.error(
+                    f'argument --{self.dest}: invalid {desired_type.__name__} value: \'{arg}\'')
+
 
 ACTIONS = {
     'rgb2gray': {
@@ -117,6 +120,15 @@ ACTIONS = {
         },
         'command': transform.fliph
     },
+    'rotate90': {
+        'args': {
+            'help': 'Rotates the image counter-clockwise 90 degrees around the center n number of times (default:%(default)s, type:%(type)s).',
+            'nargs': '?',
+            'const': 1,
+            'type': int
+        },
+        'command': transform.rotate90
+    },
     'scale': {
         'args': {
             'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image. (type:%(type)s)',
@@ -182,6 +194,7 @@ ACTIONS = {
         'command': filters.gaussian_blur
     }
 }
+
 
 def parse_args():
     parser = ArgumentParser(description="CLI for bpimage library")

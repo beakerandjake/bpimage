@@ -61,11 +61,11 @@ def rotate90(img: np.ndarray, times: int = 1) -> np.ndarray:
     """Rotates the image counter-clockwise 90 degrees around the center.
 
     Args:
-        img: The image to rotate.  
+        img: The source RGB image with shape=(h,w,3). 
         times: The number of times that the image should be rotated 90 degrees.
 
     Returns:
-        A new ndarray of the source image rotated 90 degree n times.
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
     """
     times = max(0, times) % 4
     # No need to do anything if the number of rotations brings us back to the original image.

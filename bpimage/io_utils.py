@@ -7,13 +7,13 @@ from PIL import Image, ImageShow, UnidentifiedImageError
 
 
 def open(path: str) -> np.ndarray:
-    """Attempts to load an image file as RGB and returns an ndarray
+    """Attempts to load an image file as RGB and returns an ndarray.
 
     Args:
         path: filepath to the image
 
     Returns:
-        An ndarray of shape (w,h,3) with dtype np.uint8 containing the RGB (0-255) image data 
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
 
     Raises:
         ImageOpenError: raised when something goes wrong loading the image 
@@ -41,11 +41,8 @@ def save(img: np.ndarray, path: str):
     """Attempts to save an ndarray of image data as an image with the given file name. 
 
     Args:
-        img: the ndarray of image data to save
-        path: the filename to save the image as
-
-    Returns:
-        None
+        img: The source RGB image with shape=(h,w,3).
+        path: The filename to save the image as.
 
     Raises:
         ImageSaveError: Raised when something goes wrong saving the image 
@@ -63,14 +60,10 @@ def show(img):
     """Attempts to save an ndarray of image data as an image with the given file name. 
 
     Args:
-        img: the ndarray of image data to save
-        path: the filename to save the image as
-
-    Returns:
-        None
+        img: The source RGB image with shape=(h,w,3).
 
     Raises:
-        ImageSaveError: Raised when something goes wrong saving the image 
+        ImageShowError: Raised when something goes wrong showing the image 
     """
     try:
         if not ImageShow.show(Image.fromarray(img)):

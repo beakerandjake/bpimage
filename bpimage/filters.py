@@ -18,15 +18,18 @@ def gaussian_blur(img: np.ndarray, radius: int = 1, sig: float = 1.) -> np.ndarr
     """Applies a gaussian blur to the image.
 
     Args:
-        img: The image to blur.
+        img: The source RGB image with shape=(h,w,3).
         radius: The number of pixels to take in each direction. A radius of zero or below does nothing.
-        sig: The sigma of the gaussian function
+        sig: The sigma of the gaussian function. Higher values result in more blurring.
 
     Returns:
-        A new ndarray containing the result of the gaussian blur operation
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
+
+    Raises:
+        ValueError: radius was less than one.
     """
     if radius < 1:
-        return img
+        raise ValueError('Radius must be positive.')
 
     # generate the gaussian kernel
     # https://stackoverflow.com/questions/29731726/how-to-calculate-a-gaussian-kernel-matrix-efficiently-in-numpy

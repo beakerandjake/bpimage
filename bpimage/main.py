@@ -171,23 +171,17 @@ ACTIONS = {
         },
         'command': filters.emboss
     },
-
-
-
     'gaussian': {
         'args': {
-            'help': 'Applies a gaussian blur to the image. the image.',
-            'const': [],
-            'action': 'store_const'
+            'help': 'Applies a gaussian blur to the image. Radius controls the number of pixels to take in each direction. Sigma determines the strength of the blur.',
+            'nargs': 2,
+            'metavar': ('radius', 'sig'),
+            'action': ParseMultipleTypes,
+            'types': [int, float]
         },
         'command': filters.gaussian_blur
-    },
-
+    }
 }
-
-# action specify short name and full name.
-# specify help, specify args.
-
 
 def parse_args():
     parser = ArgumentParser(description="CLI for bpimage library")

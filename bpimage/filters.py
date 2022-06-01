@@ -138,12 +138,6 @@ def emboss(img: np.ndarray, direction: str, strength: int = 1) -> np.ndarray:
         ValueError: Provided an invalid direction. 
         ValueError: Provided a strength less than one. 
     """
-    return _convolve(img, _get_emboss_kern(direction, strength=strength), bias=128.0)
-
-
-def _get_emboss_kern(direction, strength):
-    """Returns an emboss kernel which highlights in a given direction, with a strength to control the depth of the shadows.
-    """
     if strength < 1:
         raise ValueError("Strength must greater than or equal to one.")
 
@@ -171,7 +165,7 @@ def _get_emboss_kern(direction, strength):
     else:
         raise ValueError(f'Unknown emboss direction: \'{direction}\'')
 
-    return kern
+    return _convolve(img, kern, bias=128.0)
 
 
 def motion_blur(img: np.ndarray) -> np.ndarray:

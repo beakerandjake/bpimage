@@ -86,12 +86,12 @@ def rotate(img: np.ndarray, angle: float = 45, expand=True) -> np.ndarray:
     """Rotates the image counter-clockwise by a specified angle around the center
 
     Args:
-        img: The image to rotate.
+        img: The source RGB image with shape=(h,w,3). 
         angle: The amount to rotate in degrees. 
         expand: If true, expands the dimensions of resulting image so it's large enough to hold the entire rotated image. 
 
     Returns:
-        A new ndarray containing the result of the rotate
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
     """
     # convert angle to radians and precalculate values
     rads = math.radians(angle)
@@ -158,14 +158,18 @@ def shear(img: np.ndarray, shear_x: float = 1.0, shear_y: float = 1.0, expand=Tr
     """Shears the image in the specified dimension(s)
 
     Args:
-        img: The image to shear.
+        img: The source RGB image with shape=(h,w,3).
         shear_x: The amount to shear the image in the x axis
         shear_y: The amount to shear the image in the y axis
         expand: If true, expands the dimensions of resulting image so it's large enough to hold the entire skewed image. 
 
     Returns:
-        A new ndarray containing the result of the shear
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
     """
+    # handle case when no modification of the image will take place.
+    if shear_x == 1.0 and shear_y == 1.0:
+        return img.copy()
+
     # start with a basic shear matrix
     tform = _inverse_transform(shear_x=shear_x, shear_y=shear_y)
 
@@ -208,7 +212,7 @@ def _calc_new_img_size(src_shape: tuple[int, int], inv_transform: np.ndarray) ->
     return (round(np.ptp(result[:, 0])), round(np.ptp(result[:, 1])))
 
 
-def _inverse_transform(scale_x: float = 1, shear_x: float = 0, offset_x: float = 0, scale_y: float = 1, shear_y: float = 0, offset_y: float = 0) -> np.ndarray:
+def _inverse_transform(scale_x: float = 1., shear_x: float = 0., offset_x: float = 0., scale_y: float = 1., shear_y: float = 0., offset_y: float = 0.) -> np.ndarray:
     """Generates an inverse transformation matrix with the given parameters.
     Inverse transformation matricies are used because the affine function does inverse mapping,
     that is calculating the source image pixel from on the destination image pixel. 

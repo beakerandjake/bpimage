@@ -44,6 +44,20 @@ class ParseMultipleTypes(Action):
                     f'argument --{self.dest}: invalid {desired_type.__name__} value: \'{arg}\'')
 
 
+def str_to_bool(v):
+    """Attempts to parse the string value as a boolean.
+    https://stackoverflow.com/questions/15008758
+    """
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise ArgumentTypeError('Boolean value expected.')
+
+
 ACTIONS = {
     'rgb2gray': {
         'args': {
@@ -129,6 +143,16 @@ ACTIONS = {
         },
         'command': transform.rotate90
     },
+    'rotate': {
+        'args': {
+            'help': 'Rotates the image counter-clockwise by a specified angle around the center. If expand is set to true, the canvas size will be expanded to hold the rotated image. (types: float, bool)',
+            'nargs': 2,
+            'action': ParseMultipleTypes,
+            'types': [float, str_to_bool],
+            'metavar': ('angle', 'expand')
+        },
+        'command': transform.rotate
+    },
     'scale': {
         'args': {
             'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image. (type:%(type)s)',
@@ -138,6 +162,17 @@ ACTIONS = {
         },
         'command': transform.scale
     },
+    'shear': {
+        'args': {
+            'help': 'Shears the image in the specified dimension. A shear_x or shear_y value of 1.0 does not modify that axis. (type: float, float, bool)',
+            'nargs': 3,
+            'action': ParseMultipleTypes,
+            'types': [float, float, str_to_bool],
+            'metavar': ('shear_x', 'shear_y', 'expand')
+        },
+        'command': transform.shear
+    },
+    # filters
     'boxblur': {
         'args': {
             'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction. (default:%(default)s, type:%(type)s)',
@@ -175,7 +210,7 @@ ACTIONS = {
     },
     'emboss': {
         'args': {
-            'help': "Applies an emboss effect to the image. Supported direction values are 'u', 'd', 'l' and 'r' for up, down, left and right respectively. Strength determines the number of surrounding pixels to consider, larger values result in stronger highlights.",
+            'help': "Applies an emboss effect to the image. Supported direction values are 'u', 'd', 'l' and 'r' for up, down, left and right respectively. Strength determines the number of surrounding pixels to consider, larger values result in stronger highlights. (types: str, int)",
             'nargs': 2,
             'metavar': ('direction', 'strength'),
             'action': ParseMultipleTypes,
@@ -185,7 +220,7 @@ ACTIONS = {
     },
     'gaussian': {
         'args': {
-            'help': 'Applies a gaussian blur to the image. Radius controls the number of pixels to take in each direction. Sigma determines the strength of the blur.',
+            'help': 'Applies a gaussian blur to the image. Radius controls the number of pixels to take in each direction. Sigma determines the strength of the blur.  (types: int, float)',
             'nargs': 2,
             'metavar': ('radius', 'sig'),
             'action': ParseMultipleTypes,

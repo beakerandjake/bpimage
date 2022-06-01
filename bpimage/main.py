@@ -1,6 +1,6 @@
 
 import sys
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Action, ArgumentTypeError
 import collections.abc
 import io_utils
 import filters
@@ -20,17 +20,28 @@ import color
 # image sliders that show before and after?
 # make public
 
-
 # ig style filters?
 
-ACTIONS = {
-    'gaussian_blur': filters.gaussian_blur,
-    'emboss': filters.emboss,
-    'rotate': transform.rotate,
-    'shear': transform.shear
-}
 
-ACTIONS2 = {
+class ParseMultipleTypes(Action):
+    """Custom argparse.Action which supports multiple arguments with different types. 
+    args are zipped with the types and each argument will be converted to its respective type.  
+    """
+    def __init__(self, types, *args, **kwargs):
+        self._types = types
+        super(ParseMultipleTypes, self).__init__(*args, **kwargs)
+
+    def __call__(self, parser, args, values, option_string=None):
+        setattr(args, self.dest, list(self._convert_types(values, parser)))
+
+    def _convert_types(self, values, parser):
+        for (arg,desired_type) in zip(values, self._types):
+            try:        
+                yield desired_type(arg)
+            except (ValueError, TypeError, ArgumentTypeError):
+                parser.error(f'argument --{self.dest}: invalid {desired_type.__name__} value: \'{arg}\'')
+
+ACTIONS = {
     'rgb2gray': {
         'args': {
             'action': 'store_const',
@@ -120,7 +131,7 @@ ACTIONS2 = {
             'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction. (default:%(default)s, type:%(type)s)',
             'nargs': '?',
             'type': int,
-            'default': 1,
+            'const': 1,
             'metavar': 'radius'
         },
         'command': filters.boxblur
@@ -150,7 +161,16 @@ ACTIONS2 = {
         },
         'command': filters.motion_blur
     },
-
+    'emboss': {
+        'args': {
+            'help': "Applies an emboss effect to the image. Supported direction values are 'u', 'd', 'l' and 'r' for up, down, left and right respectively. Strength determines the number of surrounding pixels to consider, larger values result in stronger highlights.",
+            'nargs': 2,
+            'metavar': ('direction', 'strength'),
+            'action': ParseMultipleTypes,
+            'types': [str, int]
+        },
+        'command': filters.emboss
+    },
 
 
 
@@ -173,11 +193,10 @@ def parse_args():
     parser = ArgumentParser(description="CLI for bpimage library")
     parser.add_argument('source', help="source image file")
     parser.add_argument('-o', '--output', help='destination image file')
-    # parser.add_argument('-a', '--action', choices=ACTIONS.keys(), nargs="+")
     parser.add_argument('-d', '--debug', action='store_true',
                         help='creates a temporary image and displays using the default image viewer')
 
-    for key, value in ACTIONS2.items():
+    for key, value in ACTIONS.items():
         parser.add_argument(f'--{key}', **value['args'])
 
     # if no args provided, output the help message
@@ -191,8 +210,7 @@ def parse_args():
 def process_img(args):
     img = io_utils.open(args.source)
 
-    for key, value in ACTIONS2.items():
-        # print('iterating:', key, 'value:', value)
+    for key, value in ACTIONS.items():
         if (action_args := getattr(args, key)) is not None:
             if isinstance(action_args, collections.abc.Sequence):
                 img = value['command'](img, *action_args)

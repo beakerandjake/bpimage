@@ -115,24 +115,63 @@ def sharpen(img: np.ndarray, strength: float = 5.0) -> np.ndarray:
     return _convolve(img, kern)
 
 
-def emboss(img: np.ndarray) -> np.ndarray:
-    """Applies an emboss kernel to the image.
+def emboss(img: np.ndarray, direction: str, strength: int = 1) -> np.ndarray:
+    """Applies an emboss effect to the image.
 
     Args:
-        img: The image to emboss.
+        img: The source RGB image with shape=(h,w,3).
+        direction: One of the following supported values.
+            'u' 
+                Emboss from top to bottom   
+            'd'
+                Emboss from bottom to top
+            'l'
+                Emboss from left to right
+            'r'
+                Emboss from right to left
+        strength: The number of surrounding pixels to take in each direction.  
 
     Returns:
-        A new ndarray containing the result of the emboss operation
+        A new ndarray with dtype=uint8 and shape=(h,w,3).
+    
+    Raises:
+        ValueError: Provided an invalid direction. 
+        ValueError: Provided a strength less than one. 
     """
-    kern = np.array([[1, 1, 0],
-                     [1, 0, -1],
-                     [0, -1, -1]], dtype=np.float32)
-    # kern = np.array([[ 1, 0, 1, 0, 0],
-    #                  [ 0, 1, 1, 0, 0],
-    #                  [ 1, 1, 0,-1,-1],
-    #                  [ 0, 0,-1,-1, 0],
-    #                  [ 0, 0,-1, 0,-1]], dtype=np.float32)
-    return _convolve(img, kern, bias=128.0)
+    return _convolve(img, _get_emboss_kern(direction, strength=strength), bias=128.0)
+
+
+def _get_emboss_kern(direction, strength):
+    """Returns an emboss kernel which highlights in a given direction, with a strength to control the depth of the shadows.
+    """
+    if strength < 1:
+        raise ValueError("Strength must greater than or equal to one.")
+
+    # generate a kernel with 'strength' number of pixels surrounding the center. 
+    length = (strength * 2) + 1
+    center = length // 2
+    kern = np.zeros((length, length), dtype=np.float32)
+
+    # top to bottom
+    if direction == 'u':
+        kern[0:center, center] = 1
+        kern[center+1:, center] = -1
+    # bottom to top
+    elif direction == 'd':
+        kern[0:center, center] = -1
+        kern[center+1:, center] = 1
+    # left to right
+    elif direction == 'l':
+        kern[center, :center] = 1
+        kern[center, center+1:] = -1
+    # right to left
+    elif direction == 'r':
+        kern[center, :center] = -1
+        kern[center, center+1:] = 1
+    else:
+        raise ValueError(f'Unknown emboss direction: \'{direction}\'')
+
+    return kern
 
 
 def motion_blur(img: np.ndarray) -> np.ndarray:

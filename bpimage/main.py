@@ -1,6 +1,7 @@
 
 import sys
 from argparse import ArgumentParser, Action, ArgumentTypeError
+from pathlib import Path
 import collections.abc
 import io_utils
 import filters
@@ -8,6 +9,7 @@ import transform
 import color
 
 # todo
+# ACTIONS config in json? 
 # spell check
 # consistent comments / naming
 # requirements.txt
@@ -23,8 +25,8 @@ import color
 class ParseMultipleTypes(Action):
     """Custom argparse.Action which supports multiple arguments with different types. 
     args are zipped with the types and each argument will be converted to its respective type.  
+    Needed to support nargs > 1 with different types, as argparse only supports one type.
     """
-
     def __init__(self, types, *args, **kwargs):
         self._types = types
         super(ParseMultipleTypes, self).__init__(*args, **kwargs)
@@ -43,6 +45,7 @@ class ParseMultipleTypes(Action):
 
 def str_to_bool(v):
     """Attempts to parse the string value as a boolean.
+    Can be used with argparse to support bool arguments.
     https://stackoverflow.com/questions/15008758
     """
     if isinstance(v, bool):
@@ -136,10 +139,11 @@ ACTIONS = {
         },
         'rotate90': {
             'args': {
-                'help': 'Rotates the image counter-clockwise 90 degrees around the center n number of times (default:%(default)s, type:%(type)s).',
+                'help': 'Rotates the image counter-clockwise 90 degrees around the center n number of times (default:%(const)s, type:%(type)s).',
                 'nargs': '?',
                 'const': 1,
-                'type': int
+                'type': int,
+                'metavar': 'times'
             },
             'command': transform.rotate90
         },
@@ -176,7 +180,7 @@ ACTIONS = {
     'convolution filters': {
         'boxblur': {
             'args': {
-                'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction. (default:%(default)s, type:%(type)s)',
+                'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction. (default:%(const)s, type:%(type)s)',
                 'nargs': '?',
                 'type': int,
                 'const': 1,
@@ -234,18 +238,18 @@ ACTIONS = {
 
 
 def parse_args():
-    parser = ArgumentParser(description="CLI for bpimage library")
-    parser.add_argument('source', help="source image file")
-    parser.add_argument('-o', '--output', help='destination image file')
+    parser = ArgumentParser(description='CLI for bpimage library. Performs image editing on RGB images.')
+    parser.add_argument('source', help='source image file path', type=Path)
+    parser.add_argument('-o', '--output', help='destination image file path', type=Path)
     parser.add_argument('-d', '--debug', action='store_true',
                         help='creates a temporary image and displays using the default image viewer')
 
-    # iterate each group in our config.
+    # create an argument group for better help text and add each command to this group.
     for group_key, group_value in ACTIONS.items():
-        # create an argument group for better help text and add each command to this group.
         argument_group = parser.add_argument_group(group_key)
         for command_key, command_value in group_value.items():
-            argument_group.add_argument(f'--{command_key}', **command_value['args'])
+            argument_group.add_argument(
+                f'--{command_key}', **command_value['args'])
 
     # if no args provided, output the help message
     if len(sys.argv) < 2:
@@ -258,12 +262,14 @@ def parse_args():
 def process_img(args):
     img = io_utils.open(args.source)
 
-    for key, value in ACTIONS.items():
-        if (action_args := getattr(args, key)) is not None:
-            if isinstance(action_args, collections.abc.Sequence):
-                img = value['command'](img, *action_args)
-            else:
-                img = value['command'](img, action_args)
+    # execute each command provided to generate the final image.
+    for group in ACTIONS.values():
+        for (command_key, command_args) in group.items():
+            if (action_args := getattr(args, command_key)) is not None:
+                if isinstance(action_args, collections.abc.Sequence):
+                    img = command_args['command'](img, *action_args)
+                else:
+                    img = command_args['command'](img, action_args)
 
     if args.output:
         io_utils.save(img, args.output)
@@ -286,5 +292,5 @@ if __name__ == '__main__':
         sys.exit(main())
     except KeyboardInterrupt:
         sys.exit()
-    # except Exception as e:
-    #     sys.exit(f'Unexpected exception: {str(e)}')
+    except Exception as e:
+        sys.exit(f'Unexpected exception: {str(e)}')

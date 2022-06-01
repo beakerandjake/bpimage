@@ -164,7 +164,7 @@ ACTIONS = {
     },
     'shear': {
         'args': {
-            'help': 'Shears the image in the specified dimension. A shear_x or shear_y value of 1.0 does not modify that axis. (type: float, float, bool)',
+            'help': 'Shears the image in the specified dimension. A shear_x or shear_y value of 0.0 will not shear that axis. If expand is set to true, the canvas size will be expanded to hold the rotated image. (type: float, float, bool)',
             'nargs': 3,
             'action': ParseMultipleTypes,
             'types': [float, float, str_to_bool],

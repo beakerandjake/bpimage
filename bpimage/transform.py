@@ -154,22 +154,18 @@ def scale(img: np.ndarray, scale: float) -> np.ndarray:
     return _affine_transformation(img, tform, dest)
 
 
-def shear(img: np.ndarray, shear_x: float = 1.0, shear_y: float = 1.0, expand=True) -> np.ndarray:
+def shear(img: np.ndarray, shear_x: float, shear_y: float, expand=True) -> np.ndarray:
     """Shears the image in the specified dimension(s)
 
     Args:
         img: The source RGB image with shape=(h,w,3).
-        shear_x: The amount to shear the image in the x axis
-        shear_y: The amount to shear the image in the y axis
+        shear_x: The amount to shear the image in the x axis (0.0 does nothing)
+        shear_y: The amount to shear the image in the y axis (0.0 does nothing)
         expand: If true, expands the dimensions of resulting image so it's large enough to hold the entire skewed image. 
 
     Returns:
         A new ndarray with dtype=uint8 and shape=(h,w,3).
     """
-    # handle case when no modification of the image will take place.
-    if shear_x == 1.0 and shear_y == 1.0:
-        return img.copy()
-
     # start with a basic shear matrix
     tform = _inverse_transform(shear_x=shear_x, shear_y=shear_y)
 

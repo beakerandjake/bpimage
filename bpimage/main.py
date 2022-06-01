@@ -8,7 +8,6 @@ import transform
 import color
 
 # todo
-# accept arguments for actions
 # spell check
 # consistent comments / naming
 # requirements.txt
@@ -19,8 +18,6 @@ import color
 #   make gifs showing rotation / skew resize / strengths?
 # image sliders that show before and after?
 # make public
-
-# ig style filters?
 
 
 class ParseMultipleTypes(Action):
@@ -59,174 +56,179 @@ def str_to_bool(v):
 
 
 ACTIONS = {
-    'rgb2gray': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Converts the image to Grayscale.',
-            'const': []
+    'color modifications': {
+        'rgb2gray': {
+            'args': {
+                'action': 'store_const',
+                'help': 'Converts the image to Grayscale.',
+                'const': []
+            },
+            'command': color.rgb2grayscale
         },
-        'command': color.rgb2grayscale
+        'gray2rgb': {
+            'args': {
+                'action': 'store_const',
+                'help': 'Converts the shape of an image from grayscale (w,h,1) to RGB (w,h,3).',
+                'const': []
+            },
+            'command': color.grayscale2rgb
+        },
+        'sepia': {
+            'args': {
+                'action': 'store_const',
+                'help': 'Applies a sepia effect to the image.',
+                'const': []
+            },
+            'command': color.sepia
+        },
+        'brightness': {
+            'args': {
+                'help': 'Increase or decrease the brightness of the image based on the strength. A value of 0.0 will result in a black image, 1.0 gives the original image. (type:%(type)s)',
+                'nargs': 1,
+                'type': float,
+                'metavar': 'strength'
+            },
+            'command': color.brightness
+        },
+        'invert': {
+            'args': {
+                'action': 'store_const',
+                'help': 'Invert the colors of the image, producing a negative.',
+                'const': []
+            },
+            'command': color.invert
+        },
+        'contrast': {
+            'args': {
+                'help': 'Increase or decrease the contrast of the image based on the strength. A value of 0.0 will result in a gray image, 1.0 gives the original image. (type:%(type)s)',
+                'nargs': 1,
+                'type': float,
+                'metavar': 'strength'
+            },
+            'command': color.contrast
+        },
+        'saturation': {
+            'args': {
+                'help': 'Increase or decrease the saturation of the image based on the strength. A value of 0.0 will result in a black and white image, 1.0 gives the original image. (type:%(type)s)',
+                'nargs': 1,
+                'type': float,
+                'metavar': 'strength'
+            },
+            'command': color.saturation
+        },
     },
-    'gray2rgb': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Converts the shape of an image from grayscale (w,h,1) to RGB (w,h,3).',
-            'const': []
+    'image transformations': {
+        'flipv': {
+            'args': {
+                'action': 'store_const',
+                'help': 'Flips the image across the vertical, from left to right.',
+                'const': []
+            },
+            'command': transform.flipv
         },
-        'command': color.grayscale2rgb
+        'fliph': {
+            'args': {
+                'action': 'store_const',
+                'help': 'Flips the image across the horizontal, from bottom to top.',
+                'const': []
+            },
+            'command': transform.fliph
+        },
+        'rotate90': {
+            'args': {
+                'help': 'Rotates the image counter-clockwise 90 degrees around the center n number of times (default:%(default)s, type:%(type)s).',
+                'nargs': '?',
+                'const': 1,
+                'type': int
+            },
+            'command': transform.rotate90
+        },
+        'rotate': {
+            'args': {
+                'help': 'Rotates the image counter-clockwise by a specified angle around the center. If expand is set to true, the canvas size will be expanded to hold the rotated image. (types: float, bool)',
+                'nargs': 2,
+                'action': ParseMultipleTypes,
+                'types': [float, str_to_bool],
+                'metavar': ('angle', 'expand')
+            },
+            'command': transform.rotate
+        },
+        'scale': {
+            'args': {
+                'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image. (type:%(type)s)',
+                'nargs': 1,
+                'type': float,
+                'metavar': 'factor'
+            },
+            'command': transform.scale
+        },
+        'shear': {
+            'args': {
+                'help': 'Shears the image in the specified dimension. A shear_x or shear_y value of 0.0 will not shear that axis. If expand is set to true, the canvas size will be expanded to hold the rotated image. (type: float, float, bool)',
+                'nargs': 3,
+                'action': ParseMultipleTypes,
+                'types': [float, float, str_to_bool],
+                'metavar': ('shear_x', 'shear_y', 'expand')
+            },
+            'command': transform.shear
+        }
     },
-    'sepia': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Applies a sepia effect to the image.',
-            'const': []
+    'convolution filters': {
+        'boxblur': {
+            'args': {
+                'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction. (default:%(default)s, type:%(type)s)',
+                'nargs': '?',
+                'type': int,
+                'const': 1,
+                'metavar': 'radius'
+            },
+            'command': filters.boxblur
         },
-        'command': color.sepia
-    },
-    'brightness': {
-        'args': {
-            'help': 'Increase or decrease the brightness of the image based on the strength. A value of 0.0 will result in a black image, 1.0 gives the original image. (type:%(type)s)',
-            'nargs': 1,
-            'type': float,
-            'metavar': 'strength'
+        'outline': {
+            'args': {
+                'help': 'Highlights edges of the image.',
+                'const': [],
+                'action': 'store_const'
+            },
+            'command': filters.outline
         },
-        'command': color.brightness
-    },
-    'invert': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Invert the colors of the image, producing a negative.',
-            'const': []
+        'sharpen': {
+            'args': {
+                'help': 'Sharpens the image. (type:%(type)s)',
+                'nargs': 1,
+                'type': float,
+                'metavar': 'strength'
+            },
+            'command': filters.sharpen
         },
-        'command': color.invert
-    },
-    'contrast': {
-        'args': {
-            'help': 'Increase or decrease the contrast of the image based on the strength. A value of 0.0 will result in a gray image, 1.0 gives the original image. (type:%(type)s)',
-            'nargs': 1,
-            'type': float,
-            'metavar': 'strength'
+        'motionblur': {
+            'args': {
+                'help': 'Applies a motion blur to the image.',
+                'const': [],
+                'action': 'store_const'
+            },
+            'command': filters.motion_blur
         },
-        'command': color.contrast
-    },
-    'saturation': {
-        'args': {
-            'help': 'Increase or decrease the saturation of the image based on the strength. A value of 0.0 will result in a black and white image, 1.0 gives the original image. (type:%(type)s)',
-            'nargs': 1,
-            'type': float,
-            'metavar': 'strength'
+        'emboss': {
+            'args': {
+                'help': "Applies an emboss effect to the image. Supported direction values are 'u', 'd', 'l' and 'r' for up, down, left and right respectively. Strength determines the number of surrounding pixels to consider, larger values result in stronger highlights. (types: str, int)",
+                'nargs': 2,
+                'metavar': ('direction', 'strength'),
+                'action': ParseMultipleTypes,
+                'types': [str, int]
+            },
+            'command': filters.emboss
         },
-        'command': color.saturation
-    },
-    'flipv': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Flips the image across the vertical, from left to right.',
-            'const': []
-        },
-        'command': transform.flipv
-    },
-    'fliph': {
-        'args': {
-            'action': 'store_const',
-            'help': 'Flips the image across the horizontal, from bottom to top.',
-            'const': []
-        },
-        'command': transform.fliph
-    },
-    'rotate90': {
-        'args': {
-            'help': 'Rotates the image counter-clockwise 90 degrees around the center n number of times (default:%(default)s, type:%(type)s).',
-            'nargs': '?',
-            'const': 1,
-            'type': int
-        },
-        'command': transform.rotate90
-    },
-    'rotate': {
-        'args': {
-            'help': 'Rotates the image counter-clockwise by a specified angle around the center. If expand is set to true, the canvas size will be expanded to hold the rotated image. (types: float, bool)',
-            'nargs': 2,
-            'action': ParseMultipleTypes,
-            'types': [float, str_to_bool],
-            'metavar': ('angle', 'expand')
-        },
-        'command': transform.rotate
-    },
-    'scale': {
-        'args': {
-            'help': 'Re-sizes the image uniformly based on a (non-zero) scale factor. A value of 1.0 returns the original image. (type:%(type)s)',
-            'nargs': 1,
-            'type': float,
-            'metavar': 'factor'
-        },
-        'command': transform.scale
-    },
-    'shear': {
-        'args': {
-            'help': 'Shears the image in the specified dimension. A shear_x or shear_y value of 0.0 will not shear that axis. If expand is set to true, the canvas size will be expanded to hold the rotated image. (type: float, float, bool)',
-            'nargs': 3,
-            'action': ParseMultipleTypes,
-            'types': [float, float, str_to_bool],
-            'metavar': ('shear_x', 'shear_y', 'expand')
-        },
-        'command': transform.shear
-    },
-    # filters
-    'boxblur': {
-        'args': {
-            'help': 'Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction. (default:%(default)s, type:%(type)s)',
-            'nargs': '?',
-            'type': int,
-            'const': 1,
-            'metavar': 'radius'
-        },
-        'command': filters.boxblur
-    },
-    'outline': {
-        'args': {
-            'help': 'Highlights edges of the image.',
-            'const': [],
-            'action': 'store_const'
-        },
-        'command': filters.outline
-    },
-    'sharpen': {
-        'args': {
-            'help': 'Sharpens the image. (type:%(type)s)',
-            'nargs': 1,
-            'type': float,
-            'metavar': 'strength'
-        },
-        'command': filters.sharpen
-    },
-    'motionblur': {
-        'args': {
-            'help': 'Applies a motion blur to the image.',
-            'const': [],
-            'action': 'store_const'
-        },
-        'command': filters.motion_blur
-    },
-    'emboss': {
-        'args': {
-            'help': "Applies an emboss effect to the image. Supported direction values are 'u', 'd', 'l' and 'r' for up, down, left and right respectively. Strength determines the number of surrounding pixels to consider, larger values result in stronger highlights. (types: str, int)",
-            'nargs': 2,
-            'metavar': ('direction', 'strength'),
-            'action': ParseMultipleTypes,
-            'types': [str, int]
-        },
-        'command': filters.emboss
-    },
-    'gaussian': {
-        'args': {
-            'help': 'Applies a gaussian blur to the image. Radius controls the number of pixels to take in each direction. Sigma determines the strength of the blur.  (types: int, float)',
-            'nargs': 2,
-            'metavar': ('radius', 'sig'),
-            'action': ParseMultipleTypes,
-            'types': [int, float]
-        },
-        'command': filters.gaussian_blur
+        'gaussian': {
+            'args': {
+                'help': 'Applies a gaussian blur to the image. Radius controls the number of pixels to take in each direction. Sigma determines the strength of the blur.  (types: int, float)',
+                'nargs': 2,
+                'metavar': ('radius', 'sig'),
+                'action': ParseMultipleTypes,
+                'types': [int, float]
+            },
+            'command': filters.gaussian_blur
+        }
     }
 }
 
@@ -238,8 +240,12 @@ def parse_args():
     parser.add_argument('-d', '--debug', action='store_true',
                         help='creates a temporary image and displays using the default image viewer')
 
-    for key, value in ACTIONS.items():
-        parser.add_argument(f'--{key}', **value['args'])
+    # iterate each group in our config.
+    for group_key, group_value in ACTIONS.items():
+        # create an argument group for better help text and add each command to this group.
+        argument_group = parser.add_argument_group(group_key)
+        for command_key, command_value in group_value.items():
+            argument_group.add_argument(f'--{command_key}', **command_value['args'])
 
     # if no args provided, output the help message
     if len(sys.argv) < 2:

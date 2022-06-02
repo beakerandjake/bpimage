@@ -1,7 +1,9 @@
 # bpimage
-bpimage is a simple image editing library. Created mainly so I could explore numpy, image processing, cli development, and extending python with c. 
+bpimage is a simple image editing library. 
 
-Basic image transformations, color editing, and convolution filters are implemented. These can be invoked via a cli. 
+Created mainly so I could explore numpy, image processing, cli development, and extending python with c. 
+
+Basic image transformations, color editing, and convolution filters are implemented. These can be invoked from the cli or python. 
 
 ## Dependencies
  - python (>= 3.10)
@@ -11,3 +13,20 @@ Basic image transformations, color editing, and convolution filters are implemen
     
 ## Installation
 
+### From Source
+bpimage depends on functions written in multiple c files. These files must be compiled into a shared library so they can be invoked from python.
+
+#### Prerequisites 
+You will need: 
+ - A c compiler, such as gcc. 
+
+**Linux**
+
+ ```bash
+# checkout project if you have not already.
+git clone https://github.com/beakerandjake/bpimage.git
+# change your pwd to the root of the project.
+cd bpimage
+# compile all source c files into a shared library.
+gcc -fPIC -shared -O3 bpimage/*.c -o bpimage.so
+```

@@ -265,8 +265,10 @@ def _process_img(args):
     # execute each command provided to generate the final image.
     for group in ACTIONS.values():
         for (command_key, command_args) in group.items():
+            # if command was specified as an argument then invoke it. 
             if (action_args := getattr(args, command_key)) is not None:
                 if isinstance(action_args, collections.abc.Sequence):
+                    # ensure multiple args get unpacked.
                     img = command_args['command'](img, *action_args)
                 else:
                     img = command_args['command'](img, action_args)

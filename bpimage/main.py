@@ -1,4 +1,6 @@
 
+"""CLI for bpimage library.
+"""
 import sys
 from argparse import ArgumentParser, Action, ArgumentTypeError
 from pathlib import Path
@@ -9,13 +11,11 @@ import transform
 import color
 
 # todo
-# ACTIONS config in json? 
 # spell check
 # consistent comments / naming
 # requirements.txt
 # setup and compiling the c files for packaging.
 #   compiling library/make file?
-# error handling
 # readme
 #   make gifs showing rotation / skew resize / strengths?
 # image sliders that show before and after?
@@ -237,14 +237,17 @@ ACTIONS = {
 }
 
 
-def parse_args():
+def _get_cli_args():
     parser = ArgumentParser(description='CLI for bpimage library. Performs image editing on RGB images.')
     parser.add_argument('source', help='source image file path', type=Path)
-    parser.add_argument('-o', '--output', help='destination image file path', type=Path)
-    parser.add_argument('-d', '--debug', action='store_true',
+
+    # make user to choose to output to a file or to preview the image.
+    output_group = parser.add_mutually_exclusive_group(required=True)
+    output_group.add_argument('-d', '--dest', help='destination image file path', type=Path)
+    output_group.add_argument('-p', '--preview', action='store_true',
                         help='creates a temporary image and displays using the default image viewer')
 
-    # create an argument group for better help text and add each command to this group.
+    # create each argument group and add all group commands.
     for group_key, group_value in ACTIONS.items():
         argument_group = parser.add_argument_group(group_key)
         for command_key, command_value in group_value.items():
@@ -259,7 +262,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def process_img(args):
+def _process_img(args):
     img = io_utils.open(args.source)
 
     # execute each command provided to generate the final image.
@@ -271,25 +274,25 @@ def process_img(args):
                 else:
                     img = command_args['command'](img, action_args)
 
-    if args.output:
-        io_utils.save(img, args.output)
+    if args.dest:
+        io_utils.save(img, args.dest)
 
-    if args.debug:
+    if args.preview:
         io_utils.show(img)
 
 
-def main():
-    args = parse_args()
+def _main():
+    args = _get_cli_args()
 
     try:
-        process_img(args)
+        _process_img(args)
     except (io_utils.ImageOpenError, io_utils.ImageSaveError, io_utils.ImageShowError) as e:
         return str(e)
 
 
 if __name__ == '__main__':
     try:
-        sys.exit(main())
+        sys.exit(_main())
     except KeyboardInterrupt:
         sys.exit()
     except Exception as e:

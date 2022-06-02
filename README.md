@@ -60,7 +60,30 @@ python3 bpimage/main.py ~/Pictures/example.png --rotate90 --invert -d ~/Pictures
 ### flipv
 Flips the image across the vertical, from left to right.
 
-
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --flipv -d ~/Pictures/output.png
 ```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+:arrow_right:
+![boat-sm-flipv](https://user-images.githubusercontent.com/1727349/171754207-5c7d5dff-aa2d-45ac-ad6c-8f0840f2da26.png)
+
+### fliph
+Flips the image across the horizontal, from bottom to top.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --fliph -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+:arrow_right:
+![boat-sm-fliph](https://user-images.githubusercontent.com/1727349/171756218-0e2cac16-8468-440f-8446-7304c5bdab58.png)
+
+### rotate90
+Rotates the image counter-clockwise 90 degrees around the center n times.
+
+```bash
+# rotate the image 90 degrees 3 times
+python3 bpimage/main.py ~/Pictures/example.png --rotate90 3 -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+:arrow_right:
+![boat-sm-rotate90](https://user-images.githubusercontent.com/1727349/171756768-e9015165-aa84-4ead-8ba4-bb4080906f41.png)

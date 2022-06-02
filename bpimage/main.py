@@ -11,9 +11,6 @@ import transform
 import color
 
 # todo
-# spell check
-# consistent comments / naming
-# requirements.txt
 # setup and compiling the c files for packaging.
 #   compiling library/make file?
 # readme

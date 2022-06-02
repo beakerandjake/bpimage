@@ -5,6 +5,8 @@ Created mainly so I could explore numpy, image processing, cli development, and 
 
 Basic image transformations, color editing, and convolution filters are implemented. These can be invoked from the cli or python. 
 
+[Examples](#commands)
+
 ## Dependencies
  - python (>= 3.10)
  - numpy (>= 1.22)
@@ -51,4 +53,14 @@ Here is an example which rotates an image 90 degrees, inverts the colors, then s
 
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --rotate90 --invert -d ~/Pictures/output.png
+```
+
+## Commands
+
+### flipv
+Flips the image across the vertical, from left to right.
+
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --flipv -d ~/Pictures/output.png
 ```

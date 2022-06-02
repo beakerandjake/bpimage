@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "common.h"
 
 #define COLOR_DEPTH 3
 

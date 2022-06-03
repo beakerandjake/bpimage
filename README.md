@@ -1,11 +1,11 @@
 # bpimage
-bpimage is a simple image editing library. 
+bpimage is a simple image editing library which can be used from the command line. Basic image transformations, color editing, and convolution filters are implemented.
 
 Created mainly so I could explore numpy, image processing, cli development, and extending python with c. 
 
-Basic image transformations, color editing, and convolution filters are implemented. These can be invoked from the cli or python. 
-
-### Command Examples
+### Commands
+ - [preview](#preview--p)
+ - [dest](#dest--d)
  - [boxblur](#boxblur)
  - [brightness](#brightness)
  - [contrast](#contrast)
@@ -74,20 +74,41 @@ python3 bpimage/main.py ~/Pictures/example.png --rotate90 --invert -d ~/Pictures
 
 ## Commands
 
-### boxblur
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+### preview (-p)
+Creates a temporary file and opens the image with the systems default image viewer. Useful for testing commands and immediately seeing the result. Cannot be used with dest (-d).
 
 ```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+python3 bpimage/main.py ~/Pictures/example.png --invert -p
+```
+
+### dest (-d)
+Saves the image to the specified location. Cannot be used with preview (-p).
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png -d ~/Pictures/output.png
+```
+
+
+### boxblur
+Blurs each pixel by averaging all surrounding pixels extending radius pixels in each direction.
+
+#### Arguments:
+  - radius (int): Number of pixels to take in each direction.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --boxblur 2 -d ~/Pictures/output.png
 ```
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 ![boat-boxblur](https://user-images.githubusercontent.com/1727349/171954263-f5b6c949-4f85-4807-841b-825555956620.jpg)
 
 ### brightness
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+Modifies the brightness of the image.
+
+#### Arguments:
+  - strength (float): The amount to brighten or darken the image. A value of 0.0 will result in a black image, 1.0 gives the original image.
 
 ```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+python3 bpimage/main.py ~/Pictures/example.png --brightness 1.5 -d ~/Pictures/output.png
 ```
 ![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
 ![baboon-brightness](https://user-images.githubusercontent.com/1727349/171954234-03c00139-bfe3-4327-a50d-bc48cd937f85.jpg)

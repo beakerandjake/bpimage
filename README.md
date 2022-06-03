@@ -57,6 +57,66 @@ python3 bpimage/main.py ~/Pictures/example.png --rotate90 --invert -d ~/Pictures
 
 ## Commands
 
+### rgb2gray
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+:arrow_right:
+![baboon-gray](https://user-images.githubusercontent.com/1727349/171954242-90c253bc-6847-4bd0-8e50-edfd705bf924.jpg)
+
+### sepia
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+:arrow_right:
+![baboon-sepia](https://user-images.githubusercontent.com/1727349/171954258-ac993cd7-43d7-4693-859a-8cd079dda49f.jpg)
+
+### invert
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+:arrow_right:
+![baboon-invert](https://user-images.githubusercontent.com/1727349/171954245-63080d4b-965f-4d68-97d8-ca98f12fbad2.jpg)
+
+### contrast
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+:arrow_right:
+![baboon-contrast](https://user-images.githubusercontent.com/1727349/171954237-72508fee-8deb-44ea-b463-c14da4661dd6.jpg)
+
+### brightness
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+:arrow_right:
+![baboon-brightness](https://user-images.githubusercontent.com/1727349/171954234-03c00139-bfe3-4327-a50d-bc48cd937f85.jpg)
+
+### saturation
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+:arrow_right:
+![baboon-saturation](https://user-images.githubusercontent.com/1727349/171954249-f5c4f409-16e3-4951-ac11-822911c70057.jpg)
+
 ### gaussian
 Apply a gaussian blur to the image.
 
@@ -66,9 +126,6 @@ python3 bpimage/main.py ~/Pictures/example.png --flipv -d ~/Pictures/output.png
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 :arrow_right:
 ![boat-sm-flipv](https://user-images.githubusercontent.com/1727349/171754207-5c7d5dff-aa2d-45ac-ad6c-8f0840f2da26.png)
-
-
-
 
 ### flipv
 Flips the image across the vertical, from left to right.
@@ -138,67 +195,6 @@ python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 :arrow_right:
 ![boat-sm-shear](https://user-images.githubusercontent.com/1727349/171946655-2f3a2060-8232-4852-871d-12b066b487fa.png)
-
-### rgb2gray
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-:arrow_right:
-![baboon-gray](https://user-images.githubusercontent.com/1727349/171954242-90c253bc-6847-4bd0-8e50-edfd705bf924.jpg)
-
-### sepia
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-:arrow_right:
-![baboon-sepia](https://user-images.githubusercontent.com/1727349/171954258-ac993cd7-43d7-4693-859a-8cd079dda49f.jpg)
-
-### invert
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-:arrow_right:
-![baboon-invert](https://user-images.githubusercontent.com/1727349/171954245-63080d4b-965f-4d68-97d8-ca98f12fbad2.jpg)
-
-### contrast
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-:arrow_right:
-![baboon-contrast](https://user-images.githubusercontent.com/1727349/171954237-72508fee-8deb-44ea-b463-c14da4661dd6.jpg)
-
-### brightness
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-:arrow_right:
-![baboon-brightness](https://user-images.githubusercontent.com/1727349/171954234-03c00139-bfe3-4327-a50d-bc48cd937f85.jpg)
-
-### saturation
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-:arrow_right:
-![baboon-saturation](https://user-images.githubusercontent.com/1727349/171954249-f5c4f409-16e3-4951-ac11-822911c70057.jpg)
-
 
 ### boxblur
 Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.

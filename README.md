@@ -81,9 +81,38 @@ python3 bpimage/main.py ~/Pictures/example.png --fliph -d ~/Pictures/output.png
 Rotates the image counter-clockwise 90 degrees around the center n times.
 
 ```bash
-# rotate the image 90 degrees 3 times
 python3 bpimage/main.py ~/Pictures/example.png --rotate90 3 -d ~/Pictures/output.png
 ```
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 :arrow_right:
 ![boat-sm-rotate90](https://user-images.githubusercontent.com/1727349/171756768-e9015165-aa84-4ead-8ba4-bb4080906f41.png)
+
+### rotate
+Rotates the image counter-clockwise by a specified angle around the center. Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --rotate 45 true -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+:arrow_right:
+![boat-sm-rotate](https://user-images.githubusercontent.com/1727349/171946148-4ca79f9d-4585-474c-9fe6-33ad1bb43d87.png)
+
+### scale
+Re-sizes the image uniformly based on a scale factor.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --scale .5 -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+:arrow_right:
+![boat-sm-scale](https://user-images.githubusercontent.com/1727349/171946358-4720390a-b60b-459e-b0a7-9214833f443a.png)
+
+### shear
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+:arrow_right:
+![boat-sm-shear](https://user-images.githubusercontent.com/1727349/171946655-2f3a2060-8232-4852-871d-12b066b487fa.png)

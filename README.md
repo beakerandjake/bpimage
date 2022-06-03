@@ -7,12 +7,12 @@ Basic image transformations, color editing, and convolution filters are implemen
 
 ### Command Examples
  - [boxblur](#boxblur)
+ - [brightness](#brightness)
  - [contrast](#contrast)
  - [emboss](#emboss)
  - [fliph](#fliph)
  - [flipv](#flipv)
  - [gaussian](#gaussian)
- - [gray2rgb](#gray2rgb)
  - [invert](#invert)
  - [motionblur](#motionblur)
  - [outline](#outline)
@@ -54,7 +54,6 @@ gcc -fPIC -shared -O3 bpimage/*.c -o bpimage.so
 This will create a bpimage.so file. This file will be loaded in python and used by the library to perform image manipulation. 
 
 ## CLI Usage 
-
 First ensure that you have compiled the c files and that your pwd is the root of the project.
 ```bash
 cd bpimage
@@ -75,41 +74,14 @@ python3 bpimage/main.py ~/Pictures/example.png --rotate90 --invert -d ~/Pictures
 
 ## Commands
 
-### rgb2gray
+### boxblur
 Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
 
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
 ```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-![baboon-gray](https://user-images.githubusercontent.com/1727349/171954242-90c253bc-6847-4bd0-8e50-edfd705bf924.jpg)
-
-### sepia
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-![baboon-sepia](https://user-images.githubusercontent.com/1727349/171954258-ac993cd7-43d7-4693-859a-8cd079dda49f.jpg)
-
-### invert
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-![baboon-invert](https://user-images.githubusercontent.com/1727349/171954245-63080d4b-965f-4d68-97d8-ca98f12fbad2.jpg)
-
-### contrast
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-![baboon-contrast](https://user-images.githubusercontent.com/1727349/171954237-72508fee-8deb-44ea-b463-c14da4661dd6.jpg)
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+![boat-boxblur](https://user-images.githubusercontent.com/1727349/171954263-f5b6c949-4f85-4807-841b-825555956620.jpg)
 
 ### brightness
 Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
@@ -120,32 +92,23 @@ python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/
 ![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
 ![baboon-brightness](https://user-images.githubusercontent.com/1727349/171954234-03c00139-bfe3-4327-a50d-bc48cd937f85.jpg)
 
-### saturation
+### contrast
 Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
 
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
 ```
 ![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
-![baboon-saturation](https://user-images.githubusercontent.com/1727349/171954249-f5c4f409-16e3-4951-ac11-822911c70057.jpg)
+![baboon-contrast](https://user-images.githubusercontent.com/1727349/171954237-72508fee-8deb-44ea-b463-c14da4661dd6.jpg)
 
-### gaussian
-Apply a gaussian blur to the image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --flipv -d ~/Pictures/output.png
-```
-![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-sm-flipv](https://user-images.githubusercontent.com/1727349/171754207-5c7d5dff-aa2d-45ac-ad6c-8f0840f2da26.png)
-
-### flipv
-Flips the image across the vertical, from left to right.
+### emboss
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
 
 ```bash
-python3 bpimage/main.py ~/Pictures/example.png --flipv -d ~/Pictures/output.png
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
 ```
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-sm-flipv](https://user-images.githubusercontent.com/1727349/171754207-5c7d5dff-aa2d-45ac-ad6c-8f0840f2da26.png)
+![boat-emboss](https://user-images.githubusercontent.com/1727349/171954267-bc741bcd-ce1d-4bcd-ad82-009434b0761c.jpg)
 
 ### fliph
 Flips the image across the horizontal, from bottom to top.
@@ -156,18 +119,59 @@ python3 bpimage/main.py ~/Pictures/example.png --fliph -d ~/Pictures/output.png
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 ![boat-sm-fliph](https://user-images.githubusercontent.com/1727349/171756218-0e2cac16-8468-440f-8446-7304c5bdab58.png)
 
-### rotate90
-Rotates the image counter-clockwise 90 degrees around the center n times.
+### flipv
+Flips the image across the vertical, from left to right.
 
-#### Arguments:
-  - times (integer): Number of times to rotate the image.
-
-#### Example:
 ```bash
-python3 bpimage/main.py ~/Pictures/example.png --rotate90 3 -d ~/Pictures/output.png
+python3 bpimage/main.py ~/Pictures/example.png --flipv -d ~/Pictures/output.png
 ```
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-sm-rotate90](https://user-images.githubusercontent.com/1727349/171756768-e9015165-aa84-4ead-8ba4-bb4080906f41.png)
+![boat-sm-flipv](https://user-images.githubusercontent.com/1727349/171754207-5c7d5dff-aa2d-45ac-ad6c-8f0840f2da26.png)
+
+### gaussian
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+![boat-gaussian](https://user-images.githubusercontent.com/1727349/171954275-a02b3816-71cb-459e-b8c5-2799d4f68976.jpg)
+
+### invert
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+![baboon-invert](https://user-images.githubusercontent.com/1727349/171954245-63080d4b-965f-4d68-97d8-ca98f12fbad2.jpg)
+
+### motionblur
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+![boat-motionblur](https://user-images.githubusercontent.com/1727349/171954279-7c463749-27ee-478d-8da9-72819455e2a1.jpg)
+
+### outline
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+![boat-outline](https://user-images.githubusercontent.com/1727349/171954287-220bf86f-ea1a-4983-9b58-11048d8fe055.jpg)
+
+### rbg2gray
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+![baboon-gray](https://user-images.githubusercontent.com/1727349/171954242-90c253bc-6847-4bd0-8e50-edfd705bf924.jpg)
 
 ### rotate
 Rotates the image counter-clockwise by a specified angle around the center. Optionally expands the canvas size to hold the rotated image.
@@ -183,6 +187,28 @@ python3 bpimage/main.py ~/Pictures/example.png --rotate 45 true -d ~/Pictures/ou
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 ![boat-sm-rotate](https://user-images.githubusercontent.com/1727349/171946148-4ca79f9d-4585-474c-9fe6-33ad1bb43d87.png)
 
+### rotate90
+Rotates the image counter-clockwise 90 degrees around the center n times.
+
+#### Arguments:
+  - times (integer): Number of times to rotate the image.
+
+#### Example:
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --rotate90 3 -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+![boat-sm-rotate90](https://user-images.githubusercontent.com/1727349/171756768-e9015165-aa84-4ead-8ba4-bb4080906f41.png)
+
+### saturation
+Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
+```
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+![baboon-saturation](https://user-images.githubusercontent.com/1727349/171954249-f5c4f409-16e3-4951-ac11-822911c70057.jpg)
+
 ### scale
 Re-sizes the image uniformly based on a scale factor.
 
@@ -192,50 +218,14 @@ python3 bpimage/main.py ~/Pictures/example.png --scale .5 -d ~/Pictures/output.p
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 ![boat-sm-scale](https://user-images.githubusercontent.com/1727349/171946358-4720390a-b60b-459e-b0a7-9214833f443a.png)
 
-### shear
+### sepia
 Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
 
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
 ```
-![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-sm-shear](https://user-images.githubusercontent.com/1727349/171946655-2f3a2060-8232-4852-871d-12b066b487fa.png)
-
-### boxblur
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-boxblur](https://user-images.githubusercontent.com/1727349/171954263-f5b6c949-4f85-4807-841b-825555956620.jpg)
-
-### gaussian
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-gaussian](https://user-images.githubusercontent.com/1727349/171954275-a02b3816-71cb-459e-b8c5-2799d4f68976.jpg)
-
-### emboss
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-emboss](https://user-images.githubusercontent.com/1727349/171954267-bc741bcd-ce1d-4bcd-ad82-009434b0761c.jpg)
-
-### motionblur
-Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
-
-```bash
-python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
-```
-![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-motionblur](https://user-images.githubusercontent.com/1727349/171954279-7c463749-27ee-478d-8da9-72819455e2a1.jpg)
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+![baboon-sepia](https://user-images.githubusercontent.com/1727349/171954258-ac993cd7-43d7-4693-859a-8cd079dda49f.jpg)
 
 ### sharpen
 Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
@@ -246,12 +236,11 @@ python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 ![boat-sharpen](https://user-images.githubusercontent.com/1727349/171954293-47f1329f-46d9-4db1-9f37-10100cd9a6e5.jpg)
 
-### sharpen
+### shear
 Shears the image in the specified dimension(s). Optionally expands the canvas size to hold the rotated image.
 
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/output.png
 ```
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
-![boat-outline](https://user-images.githubusercontent.com/1727349/171954287-220bf86f-ea1a-4983-9b58-11048d8fe055.jpg)
-
+![boat-sm-shear](https://user-images.githubusercontent.com/1727349/171946655-2f3a2060-8232-4852-871d-12b066b487fa.png)

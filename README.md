@@ -57,6 +57,19 @@ python3 bpimage/main.py ~/Pictures/example.png --rotate90 --invert -d ~/Pictures
 
 ## Commands
 
+### gaussian
+Apply a gaussian blur to the image.
+
+```bash
+python3 bpimage/main.py ~/Pictures/example.png --flipv -d ~/Pictures/output.png
+```
+![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
+:arrow_right:
+![boat-sm-flipv](https://user-images.githubusercontent.com/1727349/171754207-5c7d5dff-aa2d-45ac-ad6c-8f0840f2da26.png)
+
+
+
+
 ### flipv
 Flips the image across the vertical, from left to right.
 
@@ -80,6 +93,10 @@ python3 bpimage/main.py ~/Pictures/example.png --fliph -d ~/Pictures/output.png
 ### rotate90
 Rotates the image counter-clockwise 90 degrees around the center n times.
 
+#### Arguments:
+  - times (integer): Number of times to rotate the image.
+
+#### Example:
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --rotate90 3 -d ~/Pictures/output.png
 ```
@@ -90,6 +107,11 @@ python3 bpimage/main.py ~/Pictures/example.png --rotate90 3 -d ~/Pictures/output
 ### rotate
 Rotates the image counter-clockwise by a specified angle around the center. Optionally expands the canvas size to hold the rotated image.
 
+#### Arguments:
+  - angle (float): The amount of degrees to rotate the image. 
+  - expand (boolean): Should the canvas be expanded to hold the rotated image? 
+
+#### Example:
 ```bash
 python3 bpimage/main.py ~/Pictures/example.png --rotate 45 true -d ~/Pictures/output.png
 ```
@@ -116,3 +138,17 @@ python3 bpimage/main.py ~/Pictures/example.png --shear .25 0 true -d ~/Pictures/
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 :arrow_right:
 ![boat-sm-shear](https://user-images.githubusercontent.com/1727349/171946655-2f3a2060-8232-4852-871d-12b066b487fa.png)
+
+![baboon-sm](https://user-images.githubusercontent.com/1727349/171954229-92ebc046-4b8e-4562-9bdd-f13d859934be.jpg)
+![baboon-brightness](https://user-images.githubusercontent.com/1727349/171954234-03c00139-bfe3-4327-a50d-bc48cd937f85.jpg)
+![baboon-contrast](https://user-images.githubusercontent.com/1727349/171954237-72508fee-8deb-44ea-b463-c14da4661dd6.jpg)
+![baboon-gray](https://user-images.githubusercontent.com/1727349/171954242-90c253bc-6847-4bd0-8e50-edfd705bf924.jpg)
+![baboon-invert](https://user-images.githubusercontent.com/1727349/171954245-63080d4b-965f-4d68-97d8-ca98f12fbad2.jpg)
+![baboon-saturation](https://user-images.githubusercontent.com/1727349/171954249-f5c4f409-16e3-4951-ac11-822911c70057.jpg)
+![baboon-sepia](https://user-images.githubusercontent.com/1727349/171954258-ac993cd7-43d7-4693-859a-8cd079dda49f.jpg)
+![boat-boxblur](https://user-images.githubusercontent.com/1727349/171954263-f5b6c949-4f85-4807-841b-825555956620.jpg)
+![boat-emboss](https://user-images.githubusercontent.com/1727349/171954267-bc741bcd-ce1d-4bcd-ad82-009434b0761c.jpg)
+![boat-gaussian](https://user-images.githubusercontent.com/1727349/171954275-a02b3816-71cb-459e-b8c5-2799d4f68976.jpg)
+![boat-motionblur](https://user-images.githubusercontent.com/1727349/171954279-7c463749-27ee-478d-8da9-72819455e2a1.jpg)
+![boat-outline](https://user-images.githubusercontent.com/1727349/171954287-220bf86f-ea1a-4983-9b58-11048d8fe055.jpg)
+![boat-sharpen](https://user-images.githubusercontent.com/1727349/171954293-47f1329f-46d9-4db1-9f37-10100cd9a6e5.jpg)

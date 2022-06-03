@@ -10,14 +10,6 @@ import filters
 import transform
 import color
 
-# todo
-# setup and compiling the c files for packaging.
-#   compiling library/make file?
-# readme
-#   make gifs showing rotation / skew resize / strengths?
-# image sliders that show before and after?
-# make public
-
 
 class ParseMultipleTypes(Action):
     """Custom argparse.Action which supports multiple arguments with different types. 

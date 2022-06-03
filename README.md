@@ -200,7 +200,7 @@ python3 bpimage/main.py ~/Pictures/example.png --outline -d ~/Pictures/output.pn
 ![boat-sm](https://user-images.githubusercontent.com/1727349/171754143-f9c9e477-653f-483d-957b-02be975e20f9.png)
 ![boat-outline](https://user-images.githubusercontent.com/1727349/171954287-220bf86f-ea1a-4983-9b58-11048d8fe055.jpg)
 
-### rbg2gray
+### rgb2gray
 Converts an RGB image to a grayscale image.
 
 ```bash
